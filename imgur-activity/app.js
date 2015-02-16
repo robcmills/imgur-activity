@@ -1,9 +1,19 @@
+
 var express = require('express');
 var path = require('path');
 var favicon = require('serve-favicon');
 var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
+
+// mongoose
+var mongoose = require('mongoose');
+mongoose.connect('mongodb://localhost:27017/imgur_activity');
+var db = mongoose.connection;
+db.on('error', console.error.bind(console, 'connection error:'));
+db.once('open', function (callback) {
+  console.log('db opened');
+});
 
 var routes = require('./routes/index');
 var users = require('./routes/users');

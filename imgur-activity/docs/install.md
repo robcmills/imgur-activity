@@ -26,4 +26,22 @@ from scratch
 
     visit localhost:3000
 
+## mongo
 
+    // install mongodb (osx)
+    brew install mongodb
+    mkdir data
+    // start mongo
+    mongod --dbpath data // <path to data directory>
+
+    // create imgur-activity db
+    // open a new shell
+    mongo
+    > use imgur_activity // * db names use underscores
+    // insert a document to create db
+    > db.create.insert({})
+    > exit
+
+## mongoose
+
+    ../node/bin/npm install mongoose --save
