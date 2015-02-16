@@ -1,0 +1,28 @@
+{
+  "name": "imgur-activity",
+  "version": "1.0.0",
+  "description": "watch imgur activity in realtime",
+  "main": "index.js",
+  "directories": {
+    "doc": "docs"
+  },
+  "scripts": {
+    "test": "test.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/robcmills/imgur-activity.git"
+  },
+  "keywords": [
+    "imgur",
+    "activity",
+    "watch",
+    "realtime"
+  ],
+  "author": "robcmills@gmail.com",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/robcmills/imgur-activity/issues"
+  },
+  "homepage": "https://github.com/robcmills/imgur-activity"
+}
