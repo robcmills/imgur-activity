@@ -1,0 +1,10 @@
+extends layout
+
+block content
+  h1 Users
+  if users.length
+    ol 
+      each user in users
+        li #{user.name}
+  else
+    p No users            
