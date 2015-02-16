@@ -3,27 +3,22 @@ from scratch
 
 ## node
 
-    mkdir imgur-activity
-    cd imgur-activity
-    mkdir node
-    // download node binaries tar.gz for appropriate platform
-    // unzip to imgur-activity/node
+    // install node
     // generate package.json
-    node/bin/npm init
+    node init
+    // install nodemon
+    npm install -g nodemon
 
 ## express 
 
-    node/bin/npm install express
-    node/bin/npm install express-generator
-    node_modules/express-generator/bin/express imgur-activity
+    npm install express
+    npm install express-generator
+    node_modules/express-generator/bin/express-generator imgur-activity
     cd imgur-activity
-    ../node/bin/npm install
+    npm install
 
     // run local
-    DEBUG=myapp ./bin/www
-    // or
-    ../node/bin/npm start
-
+    nodemon server.js
     visit localhost:3000
 
 ## mongo
@@ -44,4 +39,4 @@ from scratch
 
 ## mongoose
 
-    ../node/bin/npm install mongoose --save
+    npm install mongoose --save
