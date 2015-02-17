@@ -1,7 +1,7 @@
-ul.nav.nav-tabs
-  li.active 
-    a(href="#") Activity
-  li 
-    a(href="#") Watches
-  li 
-    a(href="#") About
+ul.nav.nav-tabs(ng-controller="TabCtrl as tab")
+  li(ng-class="{ active:tab.isSet(1) }")
+    a(href, ng-click="tab.setTab(1)") Activity
+  li(ng-class="{ active:tab.isSet(2) }")
+    a(href, ng-click="tab.setTab(2)") Watches
+  li(ng-class="{ active:tab.isSet(3) }")
+    a(href, ng-click="tab.setTab(3)") About
