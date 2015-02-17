@@ -1,2 +1,23 @@
 
-h3 No watches yet
+#watches(ng-show='tab === 2', ng-cloak)
+  br
+
+  form#watch-add.form-inline(ng-submit="addWatch()")
+    .form-group
+      label(for='watch-add-id') ID: &nbsp;
+      input#watch-add-id.form-control(ng-model="newWatch", type='text', placeholder=" example: gd57Pw1", autofocus)
+      &nbsp; 
+      button.btn.btn-primary(type="submit") Add
+
+  .watches-list(ng-show='watches.length') 
+    br
+    table.table.table-striped.table-condensed
+      thead
+        tr
+          th id
+      tbody
+        tr(ng-repeat="watch in watches | orderBy:'id'")
+          td {{watch.id}}
+
+  .watches-empty(ng-hide='watches.length') 
+    h3 No watches yet

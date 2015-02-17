@@ -1,13 +1,31 @@
 
 'use strict';
 
-ia.controller('TabCtrl', function TabCtrl() {
-  this.tab = 1;
-  this.isSet = function(checkTab) {
-    return this.tab === checkTab;
+ia.controller('AppCtrl', function AppCtrl($scope) {
+  $scope.tab = 2;
+  $scope.isSet = function(checkTab) {
+    return $scope.tab === checkTab;
   };
-  this.setTab = function(activeTab) {
-    this.tab = activeTab;
+  $scope.setTab = function(activeTab) {
+    $scope.tab = activeTab;
+  };
+
+  // var watches = $scope.watches = iaStorage.get();
+  var watches = $scope.watches = [];
+  $scope.newWatch = '';
+
+  $scope.addWatch = function() {
+    var newWatch = $scope.newWatch.trim();
+    if(newWatch.length === 0) {
+      return;
+    }
+
+    watches.push({
+      id: newWatch
+    });
+    // iaStorage.put(watches);
+
+    $scope.newWatch = '';
   };
 });
 
