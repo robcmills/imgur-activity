@@ -57,5 +57,14 @@ ia.controller('AppCtrl', function AppCtrl($scope, $http) {
 
   $scope.deleteWatch = function(watch) {
     console.log('deleteWatch', watch);
+    $scope.watches = $scope.watches.filter(function(w) {
+      return w.img_id !== watch.img_id;
+    });
+    $http.delete('/api/watches/' + watch._id)
+      .then(function success(resp) {
+        console.log('deleted');
+      }, function error() {
+        console.log('not deleted');
+      });
   };
 });

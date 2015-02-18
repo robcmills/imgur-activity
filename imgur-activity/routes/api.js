@@ -35,4 +35,18 @@ router.post('/watches/add', function(req, res) {
   }); 
 });
 
+router.delete('/watches/:id', function(req, res) {
+  console.log('req.params', req.params);
+  models.Watch.findByIdAndRemove(req.params.id, function (err, doc) {
+    if(err){ 
+      console.log('err saving', err, doc);
+      res.send(err); 
+    } else {
+      console.log('deleted', doc);
+      res.send('deleted'); 
+    }
+  });
+});
+
+
 module.exports = router;
