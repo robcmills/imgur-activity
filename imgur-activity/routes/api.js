@@ -14,19 +14,25 @@ router.get('/watches', function(req, res, next) {
   });
 });
 
-// router.post('/watches/add', function(req, res) {
-//   var img_id = req.body.img_id;
-//   var newUser = new models.User({ name: name });
+router.post('/watches/add', function(req, res) {
+  var newWatch = new models.Watch({ 
+    started: req.body.started,
+    img_id:  req.body.img_id,
+    uploaded: req.body.uploaded,
+    activity: []
+  });
 
-//   newUser.save(function (err, doc) {
-//     if(err){
-//       res.send(err);
-//     } else {
-//       console.log(doc);
-//       res.json(doc);
-//       // todo: respond with all users ?
-//     }
-//   }); 
-// });
+  newWatch.save(function (err, doc) {
+    if(err){
+      console.log('err saving', err, doc);
+      res.send(err);
+    } else {
+      console.log('saved', doc);
+      res.send('success');
+      // res.json(doc);
+      // todo: respond with all users ?
+    }
+  }); 
+});
 
 module.exports = router;
