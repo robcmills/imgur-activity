@@ -17,10 +17,13 @@
         tr
           th id
           th started
+          th 
       tbody
         tr(ng-repeat="watch in watches | orderBy:'started'")
           td {{watch.img_id}}
           td {{watch.started | date:'short'}}
+          td.text-right 
+            span.glyphicon.glyphicon-remove(ng-click="deleteWatch(watch)")
 
   .watches-empty(ng-hide='watches.length') 
     h3 No watches yet

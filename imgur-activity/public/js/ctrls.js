@@ -54,4 +54,8 @@ ia.controller('AppCtrl', function AppCtrl($scope, $http) {
         console.log(data, status, headers, config);
       });
   };
+
+  $scope.deleteWatch = function(watch) {
+    console.log('deleteWatch', watch);
+  };
 });
