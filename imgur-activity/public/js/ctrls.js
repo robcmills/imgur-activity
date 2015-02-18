@@ -1,7 +1,7 @@
 
 'use strict';
 
-ia.controller('AppCtrl', function AppCtrl($scope) {
+ia.controller('AppCtrl', function AppCtrl($scope, api) {
   $scope.tab = 2;
   $scope.isSet = function(checkTab) {
     return $scope.tab === checkTab;
@@ -10,8 +10,7 @@ ia.controller('AppCtrl', function AppCtrl($scope) {
     $scope.tab = activeTab;
   };
 
-  // var watches = $scope.watches = iaStorage.get();
-  var watches = $scope.watches = [];
+  var watches = $scope.watches = api.get('/watches');
   $scope.newWatch = '';
 
   $scope.addWatch = function() {
