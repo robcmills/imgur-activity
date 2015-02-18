@@ -1,7 +1,7 @@
 
 'use strict';
 
-ia.controller('AppCtrl', function AppCtrl($scope, api) {
+ia.controller('AppCtrl', function AppCtrl($scope, $http) {
   $scope.tab = 2;
   $scope.isSet = function(checkTab) {
     return $scope.tab === checkTab;
@@ -10,21 +10,41 @@ ia.controller('AppCtrl', function AppCtrl($scope, api) {
     $scope.tab = activeTab;
   };
 
-  var watches = $scope.watches = api.get('/watches');
-  $scope.newWatch = '';
+  $http.defaults.headers.common.Authorization = 'Client-ID b37988f15bb617f';
+
+  var watches = $scope.watches = [];
+  $http.get('/api/watches')
+    .success(function (data, status, headers, config) {
+      $scope.watches = data;
+    });
+  $scope.addWatchID = '';
+  $scope.invalidID = false;
 
   $scope.addWatch = function() {
-    var newWatch = $scope.newWatch.trim();
-    if(newWatch.length === 0) {
-      return;
-    }
-
-    watches.push({
-      id: newWatch
-    });
-    // iaStorage.put(watches);
-
-    $scope.newWatch = '';
+    var addWatchID = $scope.addWatchID.trim();
+    // validate
+    if(addWatchID.length === 0) { return; }
+    $http.get('https://api.imgur.com/3/gallery/image/' + addWatchID)
+      .success(function (data, status, headers, config) {
+        $scope.invalidID = false;
+        console.log('valid id');
+        console.log('data:', data);
+        console.log('data.data:', data.data);
+        data = data.data;
+        var newWatch = {
+          started: Date.now(),
+          img_id:  data.id,
+          uploaded: data.datetime
+        };
+        $scope.watches.push(newWatch);
+        // store.addWatch(newWatch);
+        $scope.addWatchID = '';
+      })
+      .error(function (data, status, headers, config) {
+        $scope.invalidID = true;
+        console.log('invalid id');
+        console.log(data, status, headers, config);
+      });
   };
 });
 

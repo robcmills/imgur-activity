@@ -4,9 +4,11 @@
   form#watch-add.form-inline(ng-submit="addWatch()")
     .form-group
       label(for='watch-add-id') ID: &nbsp;
-      input#watch-add-id.form-control(ng-model="newWatch", type='text', placeholder=" example: gd57Pw1", autofocus)
+      input#watch-add-id.form-control(ng-model="addWatchID", type='text', placeholder=" example: gd57Pw1", autofocus)
       &nbsp; 
       button.btn.btn-primary(type="submit") Add
+      &nbsp; 
+      span.btn.btn-danger(ng-show="invalidID" ng-cloak role="alert" disabled) Invalid ID
 
   .watches-list(ng-show='watches.length') 
     br
@@ -14,9 +16,11 @@
       thead
         tr
           th id
+          th started
       tbody
-        tr(ng-repeat="watch in watches | orderBy:'id'")
-          td {{watch.id}}
+        tr(ng-repeat="watch in watches | orderBy:'started'")
+          td {{watch.img_id}}
+          td {{watch.started | date:'short'}}
 
   .watches-empty(ng-hide='watches.length') 
     h3 No watches yet
