@@ -8,7 +8,7 @@
       &nbsp; 
       button.btn.btn-primary(type="submit") Add
       &nbsp; 
-      span.btn.btn-danger(ng-show="invalidID" ng-cloak role="alert" disabled) Invalid ID
+      span.btn.btn-danger(ng-show="showMsg" ng-model="msg" ng-cloak role="alert" disabled) {{msg}}
 
   .watches-list(ng-show='watches.length') 
     br
