@@ -2,6 +2,8 @@
 var express = require('express');
 var models = require('../models')
 var router = express.Router();
+var https = require('https');
+
 
 router.get('/watches', function(req, res, next) {
   models.Watch.find(function (err, docs) {
@@ -14,21 +16,61 @@ router.get('/watches', function(req, res, next) {
   });
 });
 
+router.put('/watches/update', function(req, res, next) {
+  // iterate through existing watches and add activity snapshots
+  console.log('update /watches');
+  models.Watch.find(function (err, docs) {
+    if(err){ 
+      res.send(err); 
+    } else {
+      for(i=0, l=docs.length; i<l; i++) {
+        var doc = docs[i];
+        var last_snapshot = doc.activity[docs.length - 1];
+        if(Date.now() - last_snapshot.datetime < 2000) { continue; }
+        console.log('add activity snapshot');
+        var options = {
+          hostname: 'api.imgur.com',
+          path: '/3/gallery/image/' + doc.img_id,
+          headers: {'Authorization': 'Client-ID b37988f15bb617f'}
+        }
+        https.get(options, function(res) {
+          res.on('data', function(data) {
+            data = JSON.parse(data.toString()).data;
+            var snapshot = {
+              datetime: Date.now(),
+              views: data.views,
+              comments: data.comment_count,
+              downs: data.downs,
+              ups: data.ups,
+              score: data.score,
+
+              delta_views: data.views - last_snapshot.views,
+              delta_comments: data.comment_count - last_snapshot.comments,
+              delta_downs: data.downs - last_snapshot.downs,
+              delta_ups: data.ups - last_snapshot.ups,
+              delta_score: data.score - last_snapshot.score
+            };
+            doc.activity.push(snapshot);
+            doc.save();
+          });
+        }).on('error', function(e) {
+          console.log("Got error: " + e.message);
+        });
+      }
+    }
+  });
+  res.send('watches updated'); 
+});
+
 router.get('/watches/:img_id', function(req, res) {
   console.log('req.params', req.params);
   models.Watch.findOne({'img_id': req.params.img_id}, function (err, doc) {
-    if(doc) { 
-      console.log('found doc', doc);
-      res.json(doc); 
-    }
-  });
-  models.Watch.findById(req.params.img_id, function (err, doc) {
-    if(err){ 
-      console.log('err finding', err, doc);
-      res.send(err); 
+    if(err) {
+      res.send(err);
     } else {
       console.log('found doc', doc);
-      res.json(doc); 
+      res.type('application/json');
+      res.send(JSON.stringify(doc, null, 4)); 
     }
   });
 });

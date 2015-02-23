@@ -24,53 +24,59 @@ ia.controller('AppCtrl', function AppCtrl($scope, $http) {
   $scope.addWatch = function() {
     var addWatchID = $scope.addWatchID.trim();
     // validate
-    if(addWatchID.length !== 7) { 
+    if(addWatchID.length < 1) { 
       $scope.showMsg = true;
       $scope.msg = 'INVALID ID';
       return; 
     }
+    var watch_exists = false;
     $http.get('api/watches/' + addWatchID)
       .success(function (data, status, headers, config) {
-        $scope.showMsg = true;
-        $scope.msg = 'ID EXISTS';
+        console.log('get watch data', data);
+        watch_exists = data;
+      });
+    if(watch_exists) {
+      $scope.showMsg = true;
+      $scope.msg = 'ID EXISTS';
+      return;
+    }
+    $http.get('https://api.imgur.com/3/gallery/image/' + addWatchID)
+      .success(function (data, status, headers, config) {
+        $scope.showMsg = false;
+        data = data.data;
+        var now = Date.now();
+        var newWatch = {
+          started: now,
+          img_id:  data.id,
+          uploaded: data.datetime * 1000,
+          activity: [{
+            datetime: now,
+            views: data.views,
+            comments: data.comment_count,
+            downs: data.downs,
+            ups: data.ups,
+            score: data.score
+          }]
+        };
+        $scope.watches.push(newWatch);
+        $http.post('/api/watches/add', newWatch)
+          .then(function success(resp) {
+            console.log('saved');
+            // todo.id = resp.data.id;
+            // store.todos.push(todo);
+            // return store.todos;
+          }, function error() {
+            console.log('not saved');
+            // angular.copy(originalTodos, store.todos);
+            // return store.todos;
+          });
+        $scope.addWatchID = '';
       })
       .error(function (data, status, headers, config) {
-        $http.get('https://api.imgur.com/3/gallery/image/' + addWatchID)
-          .success(function (data, status, headers, config) {
-            $scope.showMsg = false;
-            data = data.data;
-            var newWatch = {
-              started: Date.now(),
-              img_id:  data.id,
-              uploaded: data.datetime * 1000,
-              activity: [{
-                datetime: data.datetime * 1000,
-                views: data.views,
-                comments: data.comment_count,
-                downs: data.downs,
-                ups: data.ups,
-                score: data.score
-              }]
-            };
-            $scope.watches.push(newWatch);
-            $http.post('/api/watches/add', newWatch)
-              .then(function success(resp) {
-                console.log('saved');
-                // todo.id = resp.data.id;
-                // store.todos.push(todo);
-                // return store.todos;
-              }, function error() {
-                console.log('not saved');
-                // angular.copy(originalTodos, store.todos);
-                // return store.todos;
-              });
-            $scope.addWatchID = '';
-          })
-          .error(function (data, status, headers, config) {
-            $scope.showMsg = true;
-            $scope.msg = 'INVALID ID';
-          });
-    });
+        $scope.showMsg = true;
+        $scope.msg = 'INVALID ID';
+      });
+
   };
 
   $scope.deleteWatch = function(watch) {
