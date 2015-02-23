@@ -27,12 +27,19 @@ ia.controller('AppCtrl', function AppCtrl($scope, $http) {
     $http.get('https://api.imgur.com/3/gallery/image/' + addWatchID)
       .success(function (data, status, headers, config) {
         $scope.invalidID = false;
-        console.log('valid id');
         data = data.data;
         var newWatch = {
           started: Date.now(),
           img_id:  data.id,
-          uploaded: data.datetime * 1000
+          uploaded: data.datetime * 1000,
+          activity: [{
+            datetime: data.datetime * 1000,
+            views: data.views,
+            comments: data.comment_count,
+            downs: data.downs,
+            ups: data.ups,
+            score: data.score
+          }]
         };
         $scope.watches.push(newWatch);
         $http.post('/api/watches/add', newWatch)
