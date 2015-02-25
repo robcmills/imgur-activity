@@ -11,7 +11,8 @@ router.get('/watches', function(req, res, next) {
       res.send(err); 
     } else {
       console.log(docs);
-      res.json(docs);
+      res.type('application/json');
+      res.send(JSON.stringify(docs, null, 4)); 
     }
   });
 });
@@ -25,7 +26,9 @@ router.put('/watches/update', function(req, res, next) {
     } else {
       for(i=0, l=docs.length; i<l; i++) {
         var doc = docs[i];
-        var last_snapshot = doc.activity[docs.length - 1];
+        console.log('doc.activity.length', doc.activity.length);
+        var last_snapshot = doc.activity[doc.activity.length - 1];
+        console.log('last_snapshot', last_snapshot);
         if(Date.now() - last_snapshot.datetime < 2000) { continue; }
         console.log('add activity snapshot');
         var options = {
