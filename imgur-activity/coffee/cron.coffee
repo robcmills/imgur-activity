@@ -8,15 +8,16 @@ options =
 
 update = () ->
   console.log 'update', Date.now()
-  http.request options, (res) ->
-    console.log 'res', res
+  req = http.request options, (res) ->
+    console.log 'request success'
+  req.on 'error', (e) ->
+    console.log 'problem with request: ' + e.message
+  req.end()
 
-req = update()
-req.on 'error', (e) ->
-  console.log 'problem with request: ' + e.message
+update()
 
-# to = setTimeout () ->
-#   update()
-# , 60 * 1000
+interval = setInterval () ->
+  update()
+, 60 * 1000
 
 console.log 'end'
