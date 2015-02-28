@@ -1,4 +1,6 @@
-App = Ember.Application.create();
+App = Ember.Application.create({
+  rootElement: '#emberApp',
+});
 
 App.Router.map(function() {
   // put your routes here
