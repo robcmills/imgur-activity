@@ -1,0 +1,44 @@
+doctype html
+html(lang='en')
+  head
+    title imgur-activity
+    meta(name='description', description='Watch imgur activity in realtime')
+
+    meta(name="viewport", content="width=device-width, initial-scale=1")
+    meta(charset="utf-8")
+    meta(http-equiv="X-UA-Compatible", content="IE=edge")
+
+    link(rel="stylesheet", href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap.min.css")
+
+    //- script(src="js/vendor/modernizr-2.8.3.min.js")
+
+  body
+
+    script(type="text/x-handlebars")
+      .container
+        h1 imgur activity
+        .outlet
+          {{outlet}}
+
+    script(type="text/x-handlebars", id="index")
+      ul.nav.nav-tabs
+        li
+          a Activity
+        li
+          a Watches
+        li
+          a About
+
+      ul
+        {{#each item in model}}
+        li {{item}}
+        {{/each}}
+
+  footer
+
+  script(src="js/libs/jquery-1.10.2.js")
+  script(src="js/libs/ember-template-compiler-1.10.0.js")
+  script(src="js/libs/ember-1.10.0.debug.js")
+  script(src="js/app.js")
+  <!-- to activate the test runner, add the "?test" query string parameter -->
+  script(src="tests/runner.js")
