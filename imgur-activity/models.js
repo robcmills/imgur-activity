@@ -20,6 +20,7 @@ var
       delta_downs: { type: Number, default: 0 },
       delta_ups: { type: Number, default: 0 },
       delta_score: { type: Number, default: 0 },
+      // todo: make virtual computed
       delta_average: { type: Number, default: 0 },
     }]
   }),

@@ -13,7 +13,7 @@ from scratch
 
     npm install express
     npm install express-generator
-    node_modules/express-generator/bin/express-generator imgur-activity
+    express-generator imgur-activity
     cd imgur-activity
     npm install
 

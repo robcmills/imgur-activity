@@ -1,7 +1,6 @@
 
     // start mongod
-    cd imgur-activity
-    mongod --dbpath data // <path to data directory>
+    mongod --dbpath imgur-activity/data // <path to data directory>
 
     // mongo shell
     mongo
