@@ -23,7 +23,5 @@ compileTemplates = () ->
 
 
 fs.watch 'hbs', (event, filename) ->
-  console.log 'event', event, 'filename', filename
-  console.log /hbs/.test filename
   if event == 'change' and /hbs/.test filename
     compileTemplates()

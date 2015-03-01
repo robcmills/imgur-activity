@@ -28,8 +28,6 @@
   };
 
   fs.watch('hbs', function(event, filename) {
-    console.log('event', event, 'filename', filename);
-    console.log(/hbs/.test(filename));
     if (event === 'change' && /hbs/.test(filename)) {
       return compileTemplates();
     }
