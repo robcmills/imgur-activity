@@ -36,7 +36,7 @@ Ember.TEMPLATES['activity'] = Ember.Handlebars.template((function() {
       return fragment;
     }
   };
-}()));Ember.TEMPLATES['index'] = Ember.Handlebars.template((function() {
+}()));Ember.TEMPLATES['root'] = Ember.Handlebars.template((function() {
   var child0 = (function() {
     return {
       isHTMLBars: true,
