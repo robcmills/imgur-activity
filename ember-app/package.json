@@ -1,0 +1,14 @@
+{
+  "name": "imgur-activity",
+  "version": "1.0.0",
+  "description": "watch imgur activity in realtime",
+  "main": "index.html",
+  "directories": {
+    "test": "tests"
+  },
+  "scripts": {
+    "test": "test"
+  },
+  "author": "",
+  "license": "ISC"
+}

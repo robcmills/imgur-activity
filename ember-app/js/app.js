@@ -3,11 +3,15 @@ App = Ember.Application.create({
 });
 
 App.Router.map(function() {
-  // put your routes here
+  this.resource('activity', {path: '/activity'});
 });
 
-App.IndexRoute = Ember.Route.extend({
-  model: function() {
-    return ['red', 'yellow', 'blue'];
-  }
+App.IndexRoute = Ember.Route.extend({});
+
+App.ActivityRoute = Ember.Route.extend({
+ // renderTemplate: function() {
+ //    this.render('activity', {   
+ //      into: 'index'
+ //    }); 
+ //  }
 });

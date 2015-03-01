@@ -1,11 +1,12 @@
 
+
 ul.nav.nav-tabs
   li 
-    a Activity
+    {{#link-to 'activity'}}Activity{{/link-to}}
   li 
-    a Watches
+    {{#link-to 'watches'}}Watches{{/link-to}}
   li 
-    a About
+    {{#link-to 'about'}}About{{/link-to}}
 
 .outlet
   {{outlet}}
