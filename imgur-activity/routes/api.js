@@ -15,10 +15,14 @@ router.get('/watches', function(req, res, next) {
     if(err){ 
       res.send(err); 
     } else {
-      console.log(docs);
+      // console.log('docs', docs);
+      // force schema transform to convert _id -> id
+      docs.map(function(doc, i, docs) {
+        docs[i] = doc.toObject();
+      });
       res.set('Access-Control-Allow-Origin', '*');
       res.type('application/json');
-      res.send(JSON.stringify(rootify('watches', docs), null, 4)); 
+      res.send(JSON.stringify(rootify('watches', docs), null, 2)); 
     }
   });
 });

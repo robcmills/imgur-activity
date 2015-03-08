@@ -4,7 +4,7 @@ App = Ember.Application.create
 
 App.Router.map () ->
   this.resource 'root', path: '/', () ->
-    this.resource 'activity', path: '/activity'
+    this.resource 'activity', path: '/activity/:watch_id'
     this.resource 'watches', path: '/watches'
     this.resource 'about', path: '/about'
 

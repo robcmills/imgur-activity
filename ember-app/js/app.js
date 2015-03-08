@@ -10,7 +10,7 @@ App.Router.map(function() {
     path: '/'
   }, function() {
     this.resource('activity', {
-      path: '/activity'
+      path: '/activity/:watch_id'
     });
     this.resource('watches', {
       path: '/watches'
