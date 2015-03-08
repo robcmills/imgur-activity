@@ -4,6 +4,11 @@ var models = require('../models')
 var router = express.Router();
 var https = require('https');
 
+function rootify (name, docs) {
+  var root = {};
+  root[name] = docs;
+  return root;
+};
 
 router.get('/watches', function(req, res, next) {
   models.Watch.find(function (err, docs) {
@@ -11,8 +16,9 @@ router.get('/watches', function(req, res, next) {
       res.send(err); 
     } else {
       console.log(docs);
+      res.set('Access-Control-Allow-Origin', '*');
       res.type('application/json');
-      res.send(JSON.stringify(docs, null, 4)); 
+      res.send(JSON.stringify(rootify('watches', docs), null, 4)); 
     }
   });
 });
