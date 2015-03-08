@@ -23,7 +23,7 @@ compileJade = function(filename) {
 
 compileTemplates = function(filename) {
   var filenames, input, name, output, template, _i, _len;
-  console.log('compiling templates...');
+  console.log('compileTemplates', filename);
   if (/index/.test(filename)) {
     return;
   }
@@ -33,7 +33,6 @@ compileTemplates = function(filename) {
   }).map(function(filename) {
     return 'hbs/' + filename;
   });
-  console.log('filenames', filenames);
   for (_i = 0, _len = filenames.length; _i < _len; _i++) {
     filename = filenames[_i];
     template = fs.readFileSync(filename).toString();

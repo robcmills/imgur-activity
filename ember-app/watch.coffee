@@ -17,7 +17,7 @@ compileJade = (filename) ->
 
 
 compileTemplates = (filename) -> 
-  console.log 'compiling templates...'
+  console.log 'compileTemplates', filename
   return if /index/.test filename
 
   output = ''
@@ -25,7 +25,6 @@ compileTemplates = (filename) ->
     .filter (filename) -> /hbs/.test filename
     .map (filename) -> 'hbs/' + filename
 
-  console.log 'filenames', filenames
   for filename in filenames
     template = fs.readFileSync(filename).toString()
     input = compiler.precompile(template).toString()

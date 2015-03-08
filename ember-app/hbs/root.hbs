@@ -1,16 +1,13 @@
-
+ 
 <ul class="nav nav-tabs">
-  <li>
-     
-    {{#link-to 'activity'}}Activity{{/link-to}}
-  </li>
-  <li>
-     
-    {{#link-to 'watches'}}Watches{{/link-to}}
-  </li>
-  <li>
-     
-    {{#link-to 'about'}}About{{/link-to}}
-  </li>
+  {{#link-to 'activity' tagName='li'}}
+    {{link-to 'Activity' 'activity'}}
+  {{/link-to}}
+  {{#link-to 'watches' tagName='li'}}
+    {{link-to 'Watches' 'watches'}}
+  {{/link-to}}
+  {{#link-to 'about' tagName='li'}}
+    {{link-to 'About' 'about'}}
+  {{/link-to}}
 </ul>
 <div class="outlet">{{outlet}}</div>
