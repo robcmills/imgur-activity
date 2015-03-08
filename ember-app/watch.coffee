@@ -15,6 +15,10 @@ compileJade = (filename) ->
   ext = if /index/.test filename then 'html' else 'hbs'
   cp.spawn 'jade', ['-E', ext, '-P', filename]
 
+compileCss = (filename) -> 
+  console.log 'compileCss', filename
+  cp.spawn 'stylus', ['css']
+  
 
 compileTemplates = (filename) -> 
   console.log 'compileTemplates', filename
@@ -41,3 +45,4 @@ fs.watch './', recursive: true, (event, filename) ->
       when '.coffee' then compileCoffee filename
       when '.jade' then compileJade filename
       when '.hbs' then compileTemplates filename
+      when '.styl' then compileCss filename

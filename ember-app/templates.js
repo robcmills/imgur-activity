@@ -281,9 +281,7 @@ Ember.TEMPLATES['about'] = Ember.Handlebars.template((function() {
           var el3 = dom.createTextNode("\n          ");
           dom.appendChild(el2, el3);
           var el3 = dom.createElement("span");
-          dom.setAttribute(el3,"class","glyphicon glyphicon-remove");
-          var el4 = dom.createTextNode(" ");
-          dom.appendChild(el3, el4);
+          dom.setAttribute(el3,"class","delete-watch glyphicon glyphicon-remove");
           dom.appendChild(el2, el3);
           var el3 = dom.createTextNode("\n        ");
           dom.appendChild(el2, el3);
@@ -297,7 +295,7 @@ Ember.TEMPLATES['about'] = Ember.Handlebars.template((function() {
         },
         render: function render(context, env, contextualElement) {
           var dom = env.dom;
-          var hooks = env.hooks, content = hooks.content;
+          var hooks = env.hooks, get = hooks.get, element = hooks.element, content = hooks.content;
           dom.detectNamespace(contextualElement);
           var fragment;
           if (env.useFragmentCache && dom.canClone) {
@@ -318,8 +316,9 @@ Ember.TEMPLATES['about'] = Ember.Handlebars.template((function() {
           var element0 = dom.childAt(fragment, [1]);
           var morph0 = dom.createMorphAt(dom.childAt(element0, [1]),-1,-1);
           var morph1 = dom.createMorphAt(dom.childAt(element0, [3]),-1,-1);
-          content(env, morph0, context, "img_id");
-          content(env, morph1, context, "started");
+          element(env, element0, context, "action", ["showActivity", get(env, context, "watch")], {});
+          content(env, morph0, context, "watch.img_id");
+          content(env, morph1, context, "watch.started");
           return fragment;
         }
       };
@@ -380,7 +379,7 @@ Ember.TEMPLATES['about'] = Ember.Handlebars.template((function() {
       },
       render: function render(context, env, contextualElement) {
         var dom = env.dom;
-        var hooks = env.hooks, block = hooks.block;
+        var hooks = env.hooks, get = hooks.get, block = hooks.block;
         dom.detectNamespace(contextualElement);
         var fragment;
         if (env.useFragmentCache && dom.canClone) {
@@ -399,7 +398,7 @@ Ember.TEMPLATES['about'] = Ember.Handlebars.template((function() {
           fragment = this.build(dom);
         }
         var morph0 = dom.createMorphAt(dom.childAt(fragment, [1, 3]),0,1);
-        block(env, morph0, context, "each", [], {}, child0, null);
+        block(env, morph0, context, "each", [get(env, context, "controller")], {"keyword": "watch"}, child0, null);
         return fragment;
       }
     };
@@ -461,7 +460,10 @@ Ember.TEMPLATES['about'] = Ember.Handlebars.template((function() {
       var el0 = dom.createDocumentFragment();
       var el1 = dom.createTextNode("\n");
       dom.appendChild(el0, el1);
-      var el1 = dom.createTextNode("");
+      var el1 = dom.createElement("div");
+      dom.setAttribute(el1,"class","watches");
+      var el2 = dom.createTextNode("\n");
+      dom.appendChild(el1, el2);
       dom.appendChild(el0, el1);
       return el0;
     },
@@ -485,8 +487,7 @@ Ember.TEMPLATES['about'] = Ember.Handlebars.template((function() {
       } else {
         fragment = this.build(dom);
       }
-      if (this.cachedFragment) { dom.repairClonedNode(fragment,[1]); }
-      var morph0 = dom.createMorphAt(fragment,0,1,contextualElement);
+      var morph0 = dom.createMorphAt(dom.childAt(fragment, [1]),0,-1);
       block(env, morph0, context, "if", [get(env, context, "length")], {}, child0, child1);
       return fragment;
     }

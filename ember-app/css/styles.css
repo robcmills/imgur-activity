@@ -1,0 +1,6 @@
+.watches tr:hover {
+  cursor: pointer;
+}
+.watches .delete-watch:hover {
+  color: #f00;
+}
