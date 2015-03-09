@@ -14,18 +14,24 @@ App.AddWatchComponent = Ember.Component.extend
     this.container.lookup 'store:main'
   ).property()
 
+  checkImgur: (id) ->
+    console.log 'checkImgur'
+
+  checkStore: (id) ->
+    this.get 'store' 
+      .find 'watch', img_id: id
+        .then (records) => 
+          if records.length
+            this.set 'errMsg', 'ID already exists'
+          else
+            this.checkImgur id
+
   validate: () ->
     id = this.get 'val'
     if not id or not id.length 
-      this.set 'errMsg', 'Please enter an ID'
+      this.set 'errMsg', 'Please enter a valid imgur ID'
       return false
-
-    self = this
-    this.get 'store' 
-      .find 'watch', img_id: id
-        .then (records) -> 
-          if records.length
-            self.set 'errMsg', 'ID already exists'
+    this.checkStore id
 
   actions:
     add: () ->

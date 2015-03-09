@@ -14,21 +14,30 @@ App.AddWatchComponent = Ember.Component.extend({
   store: (function() {
     return this.container.lookup('store:main');
   }).property(),
-  validate: function() {
-    var id, self;
-    id = this.get('val');
-    if (!id || !id.length) {
-      this.set('errMsg', 'Please enter an ID');
-      return false;
-    }
-    self = this;
+  checkImgur: function(id) {
+    return console.log('checkImgur');
+  },
+  checkStore: function(id) {
     return this.get('store').find('watch', {
       img_id: id
-    }).then(function(records) {
-      if (records.length) {
-        return self.set('errMsg', 'ID already exists');
-      }
-    });
+    }).then((function(_this) {
+      return function(records) {
+        if (records.length) {
+          return _this.set('errMsg', 'ID already exists');
+        } else {
+          return _this.checkImgur(id);
+        }
+      };
+    })(this));
+  },
+  validate: function() {
+    var id;
+    id = this.get('val');
+    if (!id || !id.length) {
+      this.set('errMsg', 'Please enter a valid imgur ID');
+      return false;
+    }
+    return this.checkStore(id);
   },
   actions: {
     add: function() {
