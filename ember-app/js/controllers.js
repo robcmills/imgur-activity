@@ -7,3 +7,21 @@ App.WatchesController = Ember.ArrayController.extend({
     }
   }
 });
+
+App.AddWatchComponent = Ember.Component.extend({
+  errMsg: null,
+  val: null,
+  validate: function() {
+    var id;
+    id = this.get('val');
+    if (!id || !id.length) {
+      this.set('errMsg', 'Invalid ID');
+      return false;
+    }
+  },
+  actions: {
+    add: function() {
+      return console.log(this.validate());
+    }
+  }
+});

@@ -1,3 +1,8 @@
+.watches #add-watch .err-msg {
+  display: inline-block;
+  margin: 0;
+  padding: 6px 12px;
+}
 .watches tr:hover {
   cursor: pointer;
 }

@@ -2,13 +2,14 @@
 <form id='add-watch' class='form-inline'>
   <div class='form-group'>
     <label for='add-watch-id'>ID: &nbsp;</label>
-    <input id='add-watch-id' class='form-control' type='text' 
-      placeholder=" example: gd57Pw1" autofocus/>
+    {{input id='add-watch-id' class='form-control' type='text' placeholder=" example: gd57Pw1" value=val autofocus=true}}
     &nbsp; 
-    <button class='btn btn-primary' type="submit"> Add </button>
+    <button class='btn btn-primary' {{action 'add'}}> Add </button>
     &nbsp; 
     {{#if errMsg}}
-      <span class='btn btn-danger' role="alert" disabled> {{errMsg}} </span>
+      <div class='err-msg alert alert-info pull-right' role="alert">
+        {{errMsg}}
+      </div>
     {{/if}}
   </div>
 </form>
