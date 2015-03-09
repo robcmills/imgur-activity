@@ -5,6 +5,7 @@ var router = express.Router();
 var https = require('https');
 
 function rootify (name, docs) {
+  // adhere to RESTful convention
   var root = {};
   root[name] = docs;
   return root;

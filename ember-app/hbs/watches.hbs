@@ -1,33 +1,36 @@
 
 <div class='watches'>
-{{#if length}}
+  <br>
+  {{add-watch}}
 
-<table class="table table-striped table-condensed table-hover">
-  <thead>
-    <tr>
-      <th>id</th>
-      <th>started</th>
-      <th></th>
-    </tr>
-  </thead>
-  <tbody>
-    {{#each watch in controller}} 
-      <tr {{action 'showActivity' watch}}>
-        <td>{{watch.img_id}}</td>
-        <td>{{watch.started}}</td>
-        <td class="text-right">
-          <span class="delete-watch glyphicon glyphicon-remove"></span>
-        </td>
-      </tr>
-    {{/each}}
-  </tbody>
-</table>
+  {{#if length}}
 
-{{else}}
+    <table class="table table-striped table-condensed table-hover">
+      <thead>
+        <tr>
+          <th>id</th>
+          <th>started</th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody>
+        {{#each watch in controller}} 
+          <tr {{action 'showActivity' watch}}>
+            <td>{{watch.img_id}}</td>
+            <td>{{watch.started}}</td>
+            <td class="text-right">
+              <span class="delete-watch glyphicon glyphicon-remove"></span>
+            </td>
+          </tr>
+        {{/each}}
+      </tbody>
+    </table>
 
-<div class="watches-empty">
-  <h3>No watches yet</h3>
-</div>
+  {{else}}
 
-{{/if}}
+    <div class="watches-empty">
+      <br><p>No watches yet</p>
+    </div>
+
+  {{/if}}
 </div>

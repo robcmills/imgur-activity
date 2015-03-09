@@ -27,23 +27,38 @@ compileCss = function(filename) {
 };
 
 compileTemplates = function(filename) {
-  var filenames, input, name, output, template, _i, _len;
+  var components, cstr, fstr, hbs, output, t, templates, _i, _j, _k, _len, _len1, _len2;
   console.log('compileTemplates', filename);
   if (/index/.test(filename)) {
     return;
   }
   output = '';
-  filenames = fs.readdirSync('hbs').filter(function(filename) {
+  templates = [];
+  hbs = fs.readdirSync('hbs').filter(function(filename) {
     return /hbs/.test(filename);
-  }).map(function(filename) {
-    return 'hbs/' + filename;
   });
-  for (_i = 0, _len = filenames.length; _i < _len; _i++) {
-    filename = filenames[_i];
-    template = fs.readFileSync(filename).toString();
-    input = compiler.precompile(template).toString();
-    name = path.parse(filename).name;
-    output += "Ember.TEMPLATES['" + name + "'] = Ember.Handlebars.template(" + input + ");";
+  for (_i = 0, _len = hbs.length; _i < _len; _i++) {
+    filename = hbs[_i];
+    templates.push({
+      path: 'hbs/' + filename,
+      name: path.parse(filename).name
+    });
+  }
+  components = fs.readdirSync('hbs/components').filter(function(filename) {
+    return /hbs/.test(filename);
+  });
+  for (_j = 0, _len1 = components.length; _j < _len1; _j++) {
+    filename = components[_j];
+    templates.push({
+      path: 'hbs/components/' + filename,
+      name: 'components/' + path.parse(filename).name
+    });
+  }
+  for (_k = 0, _len2 = templates.length; _k < _len2; _k++) {
+    t = templates[_k];
+    fstr = fs.readFileSync(t.path).toString();
+    cstr = compiler.precompile(fstr).toString();
+    output += "\n\nEmber.TEMPLATES['" + t.name + "'] = Ember.Handlebars.template(" + cstr + ");";
   }
   return fs.writeFileSync('templates.js', output, {
     encoding: 'utf8'

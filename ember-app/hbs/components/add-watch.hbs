@@ -1,0 +1,14 @@
+
+<form id='add-watch' class='form-inline'>
+  <div class='form-group'>
+    <label for='add-watch-id'>ID: &nbsp;</label>
+    <input id='add-watch-id' class='form-control' type='text' 
+      placeholder=" example: gd57Pw1" autofocus/>
+    &nbsp; 
+    <button class='btn btn-primary' type="submit"> Add </button>
+    &nbsp; 
+    {{#if errMsg}}
+      <span class='btn btn-danger' role="alert" disabled> {{errMsg}} </span>
+    {{/if}}
+  </div>
+</form>

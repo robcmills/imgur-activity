@@ -25,16 +25,26 @@ compileTemplates = (filename) ->
   return if /index/.test filename
 
   output = ''
-  filenames = fs.readdirSync 'hbs'
-    .filter (filename) -> /hbs/.test filename
-    .map (filename) -> 'hbs/' + filename
+  templates = []
 
-  for filename in filenames
-    template = fs.readFileSync(filename).toString()
-    input = compiler.precompile(template).toString()
-    name = path.parse(filename).name
-    output += "Ember.TEMPLATES['" + name + "'] = Ember.Handlebars.template(" + 
-      input + ");"
+  hbs = fs.readdirSync 'hbs'
+    .filter (filename) -> /hbs/.test filename
+  for filename in hbs
+    templates.push 
+      path: 'hbs/' + filename
+      name: path.parse(filename).name
+
+  components = fs.readdirSync 'hbs/components'
+    .filter (filename) -> /hbs/.test filename
+  for filename in components
+    templates.push 
+      path: 'hbs/components/' + filename
+      name: 'components/' + path.parse(filename).name
+
+  for t in templates
+    fstr = fs.readFileSync(t.path).toString()
+    cstr = compiler.precompile(fstr).toString()
+    output += "\n\nEmber.TEMPLATES['" + t.name + "'] = Ember.Handlebars.template(" + cstr + ");"
 
   fs.writeFileSync 'templates.js', output, { encoding: 'utf8' }
 
