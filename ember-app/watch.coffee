@@ -6,18 +6,28 @@ cp = require 'child_process'
 compiler = require './js/libs/ember-template-compiler-1.10.0'
 
 
+errBell = (data) ->
+  console.log data.toString(), '\u0007'
+
+
 compileCoffee = (filename) -> 
   console.log 'compileCoffee', filename
-  cp.spawn 'coffee', ['-cb', filename]
+  ps = cp.spawn 'coffee', ['-cb', filename]
+  ps.stderr.on 'data', (data) -> 
+    errBell data
 
 compileJade = (filename) -> 
   console.log 'compileJade', filename
   ext = if /index/.test filename then 'html' else 'hbs'
-  cp.spawn 'jade', ['-E', ext, '-P', filename]
+  ps = cp.spawn 'jade', ['-E', ext, '-P', filename]
+  ps.stderr.on 'data', (data) -> 
+    errBell data
 
 compileCss = (filename) -> 
   console.log 'compileCss', filename
-  cp.spawn 'stylus', ['css']
+  ps = cp.spawn 'stylus', ['css']
+  ps.stderr.on 'data', (data) -> 
+    errBell data
   
 
 compileTemplates = (filename) -> 
