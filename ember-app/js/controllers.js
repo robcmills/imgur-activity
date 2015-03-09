@@ -11,13 +11,24 @@ App.WatchesController = Ember.ArrayController.extend({
 App.AddWatchComponent = Ember.Component.extend({
   errMsg: null,
   val: null,
+  store: (function() {
+    return this.container.lookup('store:main');
+  }).property(),
   validate: function() {
-    var id;
+    var id, self;
     id = this.get('val');
     if (!id || !id.length) {
-      this.set('errMsg', 'Invalid ID');
+      this.set('errMsg', 'Please enter an ID');
       return false;
     }
+    self = this;
+    return this.get('store').find('watch', {
+      img_id: id
+    }).then(function(records) {
+      if (records.length) {
+        return self.set('errMsg', 'ID already exists');
+      }
+    });
   },
   actions: {
     add: function() {

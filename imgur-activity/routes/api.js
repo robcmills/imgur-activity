@@ -81,10 +81,14 @@ router.get('/watches/:img_id', function(req, res) {
   models.Watch.findOne({'img_id': req.params.img_id}, function (err, doc) {
     if(err) {
       res.send(err);
+    } else if(!doc) {
+      res.status(404).send('Not found');
     } else {
+      doc = doc.toObject();
       console.log('found doc', doc);
+      res.set('Access-Control-Allow-Origin', '*');
       res.type('application/json');
-      res.send(JSON.stringify(doc, null, 4)); 
+      res.send(JSON.stringify(rootify('watch', doc), null, 2)); 
     }
   });
 });
