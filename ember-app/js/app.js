@@ -31,7 +31,12 @@ App.WatchesRoute = Ember.Route.extend({
 
 App.AboutRoute = Ember.Route.extend({});
 
-App.ApplicationAdapter = DS.RESTAdapter.extend({
+App.ApplicationAdapter = DS.ActiveModelAdapter.extend({
   host: 'http://localhost:3000',
-  namespace: 'api'
+  namespace: 'api',
+  ajax: function(url, type, hash) {
+    hash = hash || {};
+    hash.cache = false;
+    return this._super(url, type, hash);
+  }
 });

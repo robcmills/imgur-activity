@@ -11,12 +11,14 @@ App.WatchesController = Ember.ArrayController.extend
   errMsg: null
   val: null
 
-  store: ( ->
-    this.container.lookup 'store:main'
-  ).property()
-
   _add: (imgurObj) ->
     console.log '_add', imgurObj
+    newWatch = this.store.createRecord 'watch', 
+      imgId: imgurObj.id
+      started: new Date()
+      # started: '2015-03-15T15:33:01'
+      uploaded: new Date(imgurObj.datetime * 1000)
+    newWatch.save()
 
   checkImgur: (id) ->
     console.log 'checkImgur', id
@@ -31,13 +33,12 @@ App.WatchesController = Ember.ArrayController.extend
           this.set 'errMsg', 'Invalid ID'
 
   checkStore: (id) ->
-    this.get 'store' 
-      .find 'watch', img_id: id
-        .then (records) => 
-          if records.length
-            this.set 'errMsg', 'ID already exists'
-          else
-            this.checkImgur id
+    this.store.find 'watch', img_id: id
+      .then (records) => 
+        if records.length
+          this.set 'errMsg', 'ID already exists'
+        else
+          this.checkImgur id
 
   validate: () ->
     id = this.get 'val'

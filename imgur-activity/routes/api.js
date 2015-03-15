@@ -28,6 +28,48 @@ router.get('/watches', function(req, res, next) {
   });
 });
 
+router.options('/watches', function(req, res) {
+  res.status(200);
+  res.set('Allow', 'HEAD,GET,POST,PUT,DELETE,OPTIONS');
+  res.set('Content-Type', 'application/json; charset=utf-8');
+  res.set('Access-Control-Allow-Headers', 'Content-Type');
+  res.set('Access-Control-Allow-Origin', '*');
+  res.send(); 
+});
+
+router.post('/watches', function(req, res) {
+  console.log('req.body', req.body);
+  // var newWatch = new models.Watch({ 
+  //   started: req.body.started,
+  //   img_id:  req.body.img_id,
+  //   uploaded: req.body.uploaded,
+  //   // activity: [{
+  //   //   datetime: req.body.started, 
+  //   //   views: req.body.activity[0].views,
+  //   //   comments: req.body.activity[0].comments,
+  //   //   downs: req.body.activity[0].downs,
+  //   //   ups: req.body.activity[0].ups,
+  //   //   score: req.body.activity[0].score
+  //   // }]
+  // });
+
+  // newWatch.save(function (err, doc) {
+  //   if(err){
+  //     console.log('err saving', err, doc);
+  //     res.send(err);
+  //   } else {
+  //     console.log('saved', doc);
+  //     // res.send('success');
+  //     // res.json(doc);
+  //     // todo: respond with all users ?
+  //     doc = doc.toObject();
+  //     res.set('Access-Control-Allow-Origin', '*');
+  //     res.type('application/json');
+  //     res.send(JSON.stringify(rootify('watch', doc), null, 2)); 
+  //   }
+  // }); 
+});
+
 router.put('/watches/update', function(req, res, next) {
   // iterate through existing watches and add activity snapshots
   console.log('update /watches');

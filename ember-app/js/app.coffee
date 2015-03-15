@@ -18,6 +18,10 @@ App.WatchesRoute = Ember.Route.extend
 App.AboutRoute = Ember.Route.extend {}
 
 
-App.ApplicationAdapter = DS.RESTAdapter.extend 
+App.ApplicationAdapter = DS.ActiveModelAdapter.extend 
   host: 'http://localhost:3000'
   namespace: 'api'
+  ajax: (url, type, hash) ->
+    hash = hash || {}
+    hash.cache = false
+    this._super url, type, hash

@@ -44,7 +44,7 @@ ia.controller('AppCtrl', function AppCtrl($scope, $http) {
       .success(function (data, status, headers, config) {
         $scope.showMsg = false;
         data = data.data;
-        var now = Date.now();
+        var now = new Date();
         var newWatch = {
           started: now,
           img_id:  data.id,

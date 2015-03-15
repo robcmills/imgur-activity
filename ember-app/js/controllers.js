@@ -14,11 +14,15 @@ App.WatchesController = Ember.ArrayController.extend({
   needs: ['imgurApi'],
   errMsg: null,
   val: null,
-  store: (function() {
-    return this.container.lookup('store:main');
-  }).property(),
   _add: function(imgurObj) {
-    return console.log('_add', imgurObj);
+    var newWatch;
+    console.log('_add', imgurObj);
+    newWatch = this.store.createRecord('watch', {
+      imgId: imgurObj.id,
+      started: new Date(),
+      uploaded: new Date(imgurObj.datetime * 1000)
+    });
+    return newWatch.save();
   },
   checkImgur: function(id) {
     console.log('checkImgur', id);
@@ -37,7 +41,7 @@ App.WatchesController = Ember.ArrayController.extend({
     })(this));
   },
   checkStore: function(id) {
-    return this.get('store').find('watch', {
+    return this.store.find('watch', {
       img_id: id
     }).then((function(_this) {
       return function(records) {
