@@ -1,12 +1,13 @@
 
+App.ImgurApiController = Ember.Controller.extend
+  get: (id) ->
+    $.ajax 
+      url: 'https://api.imgur.com/3/gallery/image/' + id
+      headers: Authorization: 'Client-ID b37988f15bb617f'
+
+
 App.WatchesController = Ember.ArrayController.extend
-  actions: 
-    showActivity: (watch) ->
-      console.log 'showActivity', watch
-      this.transitionToRoute 'activity', watch
-
-
-App.AddWatchComponent = Ember.Component.extend
+  needs: ['imgurApi']
   errMsg: null
   val: null
 
@@ -14,8 +15,20 @@ App.AddWatchComponent = Ember.Component.extend
     this.container.lookup 'store:main'
   ).property()
 
+  _add: (imgurObj) ->
+    console.log '_add', imgurObj
+
   checkImgur: (id) ->
-    console.log 'checkImgur'
+    console.log 'checkImgur', id
+    this.get 'controllers.imgurApi' 
+      .get id
+        .done (response) =>
+          console.log 'done', response
+          if response.success
+            this._add response.data
+        .fail (jqXHR, textStatus) =>
+          console.log 'fail', jqXHR, textStatus
+          this.set 'errMsg', 'Invalid ID'
 
   checkStore: (id) ->
     this.get 'store' 
@@ -36,4 +49,8 @@ App.AddWatchComponent = Ember.Component.extend
   actions:
     add: () ->
       console.log this.validate()
+
+    showActivity: (watch) ->
+      console.log 'showActivity', watch
+      this.transitionToRoute 'activity', watch
 
