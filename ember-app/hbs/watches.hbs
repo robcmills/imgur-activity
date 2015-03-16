@@ -35,7 +35,8 @@
             <td>{{watch.started}}</td>
             <td>{{watch.uploaded}}</td>
             <td class="text-right">
-              <span class="delete-watch glyphicon glyphicon-remove"></span>
+              <span class="delete-watch glyphicon glyphicon-remove" 
+                {{action 'delete' watch}}></span>
             </td>
           </tr>
         {{/each}}

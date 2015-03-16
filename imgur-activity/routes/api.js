@@ -59,9 +59,6 @@ router.post('/watches', function(req, res) {
       res.send(err);
     } else {
       console.log('saved', doc);
-      // res.send('success');
-      // res.json(doc);
-      // todo: respond with all users ?
       doc = doc.toObject();
       res.set('Access-Control-Allow-Origin', '*');
       res.type('application/json');
@@ -118,61 +115,45 @@ router.put('/watches/update', function(req, res, next) {
   res.send('watches updated'); 
 });
 
-router.get('/watches/:img_id', function(req, res) {
-  console.log('req.params', req.params);
-  models.Watch.findOne({'img_id': req.params.img_id}, function (err, doc) {
-    if(err) {
-      res.send(err);
-    } else if(!doc) {
-      res.status(404).send('Not found');
-    } else {
-      doc = doc.toObject();
-      console.log('found doc', doc);
-      res.set('Access-Control-Allow-Origin', '*');
-      res.type('application/json');
-      res.send(JSON.stringify(rootify('watch', doc), null, 2)); 
-    }
-  });
+
+router.options('/watches/:watch_id', function(req, res) {
+  res.status(200);
+  res.set('Access-Control-Allow-Methods', 'DELETE,GET,HEAD,OPTIONS,POST,PUT');
+  res.set('Access-Control-Allow-Headers', 'Content-Type');
+  res.set('Content-Type', 'application/json; charset=utf-8');
+  res.set('Access-Control-Allow-Origin', '*');
+  res.send(); 
 });
 
-router.post('/watches/add', function(req, res) {
-  console.log('req.body', req.body);
-  var newWatch = new models.Watch({ 
-    started: req.body.started,
-    img_id:  req.body.img_id,
-    uploaded: req.body.uploaded,
-    activity: [{
-      datetime: req.body.started, 
-      views: req.body.activity[0].views,
-      comments: req.body.activity[0].comments,
-      downs: req.body.activity[0].downs,
-      ups: req.body.activity[0].ups,
-      score: req.body.activity[0].score
-    }]
-  });
-
-  newWatch.save(function (err, doc) {
-    if(err){
-      console.log('err saving', err, doc);
-      res.send(err);
-    } else {
-      console.log('saved', doc);
-      res.send('success');
-      // res.json(doc);
-      // todo: respond with all users ?
-    }
-  }); 
-});
+// router.get('/watches/:watch_id', function(req, res) {
+//   console.log('req.body', req.body);
+//   models.Watch.findOne({'img_id': req.params.img_id}, function (err, doc) {
+//     if(err) {
+//       res.send(err);
+//     } else if(!doc) {
+//       res.status(404).send('Not found');
+//     } else {
+//       doc = doc.toObject();
+//       console.log('found doc', doc);
+//       res.set('Access-Control-Allow-Origin', '*');
+//       res.type('application/json');
+//       res.send(JSON.stringify(rootify('watch', doc), null, 2)); 
+//     }
+//   });
+// });
 
 router.delete('/watches/:id', function(req, res) {
   console.log('req.params', req.params);
   models.Watch.findByIdAndRemove(req.params.id, function (err, doc) {
     if(err){ 
-      console.log('err saving', err, doc);
+      console.log('err deleting', err, doc);
       res.send(err); 
     } else {
       console.log('deleted', doc);
-      res.send('deleted'); 
+      doc = doc.toObject();
+      res.set('Access-Control-Allow-Origin', '*');
+      res.type('application/json');
+      res.send(JSON.stringify(rootify('watch', doc), null, 2)); 
     }
   });
 });

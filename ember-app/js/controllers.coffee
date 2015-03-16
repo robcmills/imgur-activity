@@ -55,3 +55,8 @@ App.WatchesController = Ember.ArrayController.extend
       console.log 'showActivity', watch
       this.transitionToRoute 'activity', watch
 
+    delete: (watch) ->
+      console.log 'delete', watch
+      watch.deleteRecord()
+      watch.save()
+

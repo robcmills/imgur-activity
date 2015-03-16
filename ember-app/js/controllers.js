@@ -69,6 +69,11 @@ App.WatchesController = Ember.ArrayController.extend({
     showActivity: function(watch) {
       console.log('showActivity', watch);
       return this.transitionToRoute('activity', watch);
+    },
+    "delete": function(watch) {
+      console.log('delete', watch);
+      watch.deleteRecord();
+      return watch.save();
     }
   }
 });
