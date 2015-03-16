@@ -8,7 +8,7 @@ var idTransform = function (doc, ret, options) {
 };
 
 var watchSchema = new Schema({
-  started: { type: Date, default: Date.now },
+  started: Date,
   img_id:  String,
   uploaded: Date,
   activities: [Schema.Types.ObjectId]

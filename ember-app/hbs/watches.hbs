@@ -24,14 +24,16 @@
         <tr>
           <th>id</th>
           <th>started</th>
+          <th>uploaded</th>
           <th></th>
         </tr>
       </thead>
       <tbody>
         {{#each watch in controller}} 
           <tr {{action 'showActivity' watch}}>
-            <td>{{watch.img_id}}</td>
+            <td>{{watch.imgId}}</td>
             <td>{{watch.started}}</td>
+            <td>{{watch.uploaded}}</td>
             <td class="text-right">
               <span class="delete-watch glyphicon glyphicon-remove"></span>
             </td>
