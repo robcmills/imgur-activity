@@ -11,14 +11,28 @@ App.WatchesController = Ember.ArrayController.extend
   errMsg: null
   val: null
 
+  reset: () ->
+    this.setProperties errMsg: null, val: null
+
   _add: (imgurObj) ->
     console.log '_add', imgurObj
+    now = new Date()
     newWatch = this.store.createRecord 'watch', 
       imgId: imgurObj.id
-      started: new Date()
-      # started: '2015-03-15T15:33:01'
+      started: now
       uploaded: new Date(imgurObj.datetime * 1000)
-    newWatch.save()
+    newWatch.save().then (newWatch) =>
+      console.log 'newWatch', newWatch, newWatch.constructor
+      newActivity = this.store.createRecord 'activity', 
+        comments: imgurObj.comment_count
+        datetime: now
+        downs: imgurObj.downs
+        score: imgurObj.score
+        ups: imgurObj.ups 
+        views: imgurObj.views
+        watch: newWatch
+      newActivity.save()
+    this.reset()
 
   checkImgur: (id) ->
     console.log 'checkImgur', id

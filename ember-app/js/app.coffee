@@ -25,3 +25,6 @@ App.ApplicationAdapter = DS.ActiveModelAdapter.extend
     hash = hash || {}
     hash.cache = false
     this._super url, type, hash
+
+inflector = Ember.Inflector.inflector
+inflector.irregular 'activity', 'activities'

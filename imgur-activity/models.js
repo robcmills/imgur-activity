@@ -16,7 +16,7 @@ var watchSchema = new Schema({
 watchSchema.set('toObject', {transform: idTransform});
 
 var activitySchema = new Schema({
-  watch: Schema.Types.ObjectId,
+  watch_id: Schema.Types.ObjectId,
   now: Date, 
   views: Number,
   comments: Number,

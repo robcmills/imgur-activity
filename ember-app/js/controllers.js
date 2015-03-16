@@ -14,15 +14,38 @@ App.WatchesController = Ember.ArrayController.extend({
   needs: ['imgurApi'],
   errMsg: null,
   val: null,
+  reset: function() {
+    return this.setProperties({
+      errMsg: null,
+      val: null
+    });
+  },
   _add: function(imgurObj) {
-    var newWatch;
+    var newWatch, now;
     console.log('_add', imgurObj);
+    now = new Date();
     newWatch = this.store.createRecord('watch', {
       imgId: imgurObj.id,
-      started: new Date(),
+      started: now,
       uploaded: new Date(imgurObj.datetime * 1000)
     });
-    return newWatch.save();
+    newWatch.save().then((function(_this) {
+      return function(newWatch) {
+        var newActivity;
+        console.log('newWatch', newWatch, newWatch.constructor);
+        newActivity = _this.store.createRecord('activity', {
+          comments: imgurObj.comment_count,
+          datetime: now,
+          downs: imgurObj.downs,
+          score: imgurObj.score,
+          ups: imgurObj.ups,
+          views: imgurObj.views,
+          watch: newWatch
+        });
+        return newActivity.save();
+      };
+    })(this));
+    return this.reset();
   },
   checkImgur: function(id) {
     console.log('checkImgur', id);
