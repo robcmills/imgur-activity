@@ -11,6 +11,8 @@ function rootify (name, docs) {
   return root;
 };
 
+// /watches 
+
 router.options('/watches', function(req, res) {
   res.status(200);
   res.set('Allow', 'HEAD,GET,POST,PUT,DELETE,OPTIONS');
@@ -68,6 +70,8 @@ router.post('/watches', function(req, res) {
 });
 
 
+// /watches/:id 
+
 router.options('/watches/:id', function(req, res) {
   res.status(200);
   res.set('Access-Control-Allow-Methods', 'DELETE,GET,HEAD,OPTIONS,POST,PUT');
@@ -94,6 +98,25 @@ router.get('/watches/:id', function(req, res) {
   });
 });
 
+router.put('/watches/:id', function(req, res) {
+  console.log('put watches/:id req.body', req.body);
+  models.Watch.findByIdAndUpdate(req.params.id, req.body.watch,
+      function (err, doc) {
+      console.log('err', err, 'doc', doc);
+    if(err) {
+      res.send(err);
+    } else if(!doc) {
+      res.status(404).send('Not found');
+    } else {
+      doc = doc.toObject();
+      console.log('updated doc', doc);
+      res.set('Access-Control-Allow-Origin', '*');
+      res.type('application/json');
+      res.send(JSON.stringify(rootify('watch', doc), null, 2)); 
+    }
+  });
+});
+
 router.delete('/watches/:id', function(req, res) {
   console.log('req.params', req.params);
   models.Watch.findByIdAndRemove(req.params.id, function (err, doc) {
@@ -111,54 +134,7 @@ router.delete('/watches/:id', function(req, res) {
 });
 
 
-router.put('/watches/update', function(req, res, next) {
-  // iterate through existing watches and add activity snapshots
-  console.log('update /watches');
-  models.Watch.find(function (err, docs) {
-    if(err){ 
-      res.send(err); 
-    } else {
-      for(i=0, l=docs.length; i<l; i++) {
-        var doc = docs[i];
-        console.log('doc.activity.length', doc.activity.length);
-        var last_snapshot = doc.activity[doc.activity.length - 1];
-        console.log('last_snapshot', last_snapshot);
-        if(Date.now() - last_snapshot.datetime < 2000) { continue; }
-        console.log('add activity snapshot');
-        var options = {
-          hostname: 'api.imgur.com',
-          path: '/3/gallery/image/' + doc.img_id,
-          headers: {'Authorization': 'Client-ID b37988f15bb617f'}
-        }
-        https.get(options, function(res) {
-          res.on('data', function(data) {
-            data = JSON.parse(data.toString()).data;
-            var snapshot = {
-              datetime: Date.now(),
-              views: data.views,
-              comments: data.comment_count,
-              downs: data.downs,
-              ups: data.ups,
-              score: data.score,
-
-              delta_views: data.views - last_snapshot.views,
-              delta_comments: data.comment_count - last_snapshot.comments,
-              delta_downs: data.downs - last_snapshot.downs,
-              delta_ups: data.ups - last_snapshot.ups,
-              delta_score: data.score - last_snapshot.score
-            };
-            doc.activity.push(snapshot);
-            doc.save();
-          });
-        }).on('error', function(e) {
-          console.log("Got error: " + e.message);
-        });
-      }
-    }
-  });
-  res.send('watches updated'); 
-});
-
+// /activities 
 
 router.options('/activities', function(req, res) {
   res.status(200);
