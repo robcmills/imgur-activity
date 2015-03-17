@@ -1,21 +1,21 @@
 
 App.Watch = DS.Model.extend
-  started: DS.attr 'date'
-  imgId: DS.attr 'string'  
-  uploaded: DS.attr 'date'
   activities: DS.hasMany 'activity'
+  imgId: DS.attr 'string'  
+  started: DS.attr 'date'
+  uploaded: DS.attr 'date'
 
 App.Activity = DS.Model.extend
-  watch: DS.belongsTo 'watch'
-  datetime: DS.attr 'date'
-  views: DS.attr 'number'
   comments: DS.attr 'number'
+  datetime: DS.attr 'date'
   downs: DS.attr 'number'
-  ups: DS.attr 'number'
   score: DS.attr 'number'
+  ups: DS.attr 'number'
+  views: DS.attr 'number'
+  watch: DS.belongsTo 'watch'
 
-  deltaViews: DS.attr 'number', default: 0
-  deltaComments: DS.attr 'number', default: 0
-  deltaDowns: DS.attr 'number', default: 0
-  deltaUps: DS.attr 'number', default: 0
-  deltaScore: DS.attr 'number', default: 0
+  # deltaViews: DS.attr 'number', default: 0
+  # deltaComments: DS.attr 'number', default: 0
+  # deltaDowns: DS.attr 'number', default: 0
+  # deltaUps: DS.attr 'number', default: 0
+  # deltaScore: DS.attr 'number', default: 0

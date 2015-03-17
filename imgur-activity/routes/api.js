@@ -164,6 +164,7 @@ router.get('/activities', function(req, res, next) {
 
 router.post('/activities', function(req, res) {
   console.log('req.body', req.body);
+
   var newActivity = new models.Activity({ 
     comments: req.body.activity.comments,
     datetime: req.body.activity.datetime, 
@@ -186,6 +187,35 @@ router.post('/activities', function(req, res) {
       res.send(JSON.stringify(rootify('activity', doc), null, 2)); 
     }
   }); 
+
+ // models.Watch.findById(req.body.activity.watch_id, function (err, doc) {
+ //    if(err) {
+ //      res.send(err);
+ //    } else if(!doc) {
+ //      res.status(404).send('Not found');
+ //    } else {   
+ //      doc.activities.push({
+ //        comments: req.body.activity.comments,
+ //        datetime: req.body.activity.datetime, 
+ //        downs: req.body.activity.downs,
+ //        score: req.body.activity.score,
+ //        ups: req.body.activity.ups,
+ //        views: req.body.activity.views,
+ //      });
+ //      doc.save(function (err, doc) {
+ //        if(err) {
+ //          res.send(err);
+ //        } else {
+ //          console.log('saved', doc);
+ //          doc = doc.toObject();
+ //          res.set('Access-Control-Allow-Origin', '*');
+ //          res.type('application/json');
+ //          res.send(JSON.stringify(rootify('activity', doc), null, 2)); 
+ //        }
+ //      });
+ //    }
+ //  }); 
+
 });
 
 module.exports = router;
