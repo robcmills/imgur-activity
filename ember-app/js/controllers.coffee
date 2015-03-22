@@ -77,15 +77,16 @@ App.ActivitiesView = Ember.View.extend
   classNames: ['activities-view']
 
   didInsertElement: () ->
-    # this.initD3()
+    console.log this.get 'controller.constructor'
+    this.initD3()
 
   initD3: () ->
     margin = top: 20, right: 20, bottom: 30, left: 50
     width = 960 - margin.left - margin.right
     height = 300 - margin.top - margin.bottom
 
-    parseDate = d3.time.format("%d-%b-%y").parse;
-    # parseDatetime = d3.time.format('%Y-%m-%dT%H:%M:%S.%LZ').parse;
+    # parseDate = d3.time.format("%d-%b-%y").parse;
+    parseDatetime = d3.time.format('%Y-%m-%dT%H:%M:%S.%LZ').parse;
     x = d3.time.scale().range([0, width])
     y = d3.scale.linear().range([height, 0])
 
@@ -103,23 +104,23 @@ App.ActivitiesView = Ember.View.extend
       .append("g")
         .attr("transform", "translate(" + margin.left + "," + margin.top + ")")
 
-    dataStr = """
-      date,close
-      1-May-12,582.13
-      30-Apr-12,583.98
-      27-Apr-12,603.00
-      26-Apr-12,607.70
-      25-Apr-12,610.00
-      24-Apr-12,560.28
-    """
-    # dataStr = this.get 'controller.viewsDataStr'
+    # dataStr = """
+    #   date,close
+    #   1-May-12,582.13
+    #   30-Apr-12,583.98
+    #   27-Apr-12,603.00
+    #   26-Apr-12,607.70
+    #   25-Apr-12,610.00
+    #   24-Apr-12,560.28
+    # """
+    dataStr = this.get 'controller.viewsDataStr'
 
     data = d3.csv.parse dataStr, (d) -> 
-      date: parseDate d.date
-      close: +d.close
+      datetime: parseDatetime d.datetime
+      views: +d.views
 
-    x.domain d3.extent data, (d) -> d.date 
-    y.domain d3.extent data, (d) -> d.close
+    x.domain d3.extent data, (d) -> d.datetime
+    y.domain d3.extent data, (d) -> d.views
 
     svg.append "g"
       .attr "class", "x axis"
@@ -134,7 +135,7 @@ App.ActivitiesView = Ember.View.extend
         .attr("y", 6)
         .attr("dy", ".71em")
         .style("text-anchor", "end")
-        .text("Price ($)")
+        .text("views")
 
     svg.append("path")
       .datum(data)
@@ -148,7 +149,7 @@ App.ActivitiesController = Ember.ArrayController.extend
 
   views: ( ->
     this.mapBy('views')
-  ).property('@each.views')
+  ).property '@each.views'
 
   viewsDataStr: ( ->
     dataStr = 'datetime,views\n'
@@ -157,6 +158,6 @@ App.ActivitiesController = Ember.ArrayController.extend
         (item.get 'views') + '\n'
       null
     dataStr
-  ).property('@each')
+  ).property '@each'
 
 

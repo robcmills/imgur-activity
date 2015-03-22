@@ -92,9 +92,12 @@ App.ActivityController = Ember.Controller.extend({
 
 App.ActivitiesView = Ember.View.extend({
   classNames: ['activities-view'],
-  didInsertElement: function() {},
+  didInsertElement: function() {
+    console.log(this.get('controller.constructor'));
+    return this.initD3();
+  },
   initD3: function() {
-    var data, dataStr, height, line, margin, parseDate, svg, width, x, xAxis, y, yAxis;
+    var data, dataStr, height, line, margin, parseDatetime, svg, width, x, xAxis, y, yAxis;
     margin = {
       top: 20,
       right: 20,
@@ -103,7 +106,7 @@ App.ActivitiesView = Ember.View.extend({
     };
     width = 960 - margin.left - margin.right;
     height = 300 - margin.top - margin.bottom;
-    parseDate = d3.time.format("%d-%b-%y").parse;
+    parseDatetime = d3.time.format('%Y-%m-%dT%H:%M:%S.%LZ').parse;
     x = d3.time.scale().range([0, width]);
     y = d3.scale.linear().range([height, 0]);
     xAxis = d3.svg.axis().scale(x).orient("bottom");
@@ -114,21 +117,21 @@ App.ActivitiesView = Ember.View.extend({
       return y(d.views);
     });
     svg = d3.select(".activities-view").append("svg").attr("width", width + margin.left + margin.right).attr("height", height + margin.top + margin.bottom).append("g").attr("transform", "translate(" + margin.left + "," + margin.top + ")");
-    dataStr = "date,close\n1-May-12,582.13\n30-Apr-12,583.98\n27-Apr-12,603.00\n26-Apr-12,607.70\n25-Apr-12,610.00\n24-Apr-12,560.28";
+    dataStr = this.get('controller.viewsDataStr');
     data = d3.csv.parse(dataStr, function(d) {
       return {
-        date: parseDate(d.date),
-        close: +d.close
+        datetime: parseDatetime(d.datetime),
+        views: +d.views
       };
     });
     x.domain(d3.extent(data, function(d) {
-      return d.date;
+      return d.datetime;
     }));
     y.domain(d3.extent(data, function(d) {
-      return d.close;
+      return d.views;
     }));
     svg.append("g").attr("class", "x axis").attr("transform", "translate(0," + height + ")").call(xAxis);
-    svg.append("g").attr("class", "y axis").call(yAxis).append("text").attr("transform", "rotate(-90)").attr("y", 6).attr("dy", ".71em").style("text-anchor", "end").text("Price ($)");
+    svg.append("g").attr("class", "y axis").call(yAxis).append("text").attr("transform", "rotate(-90)").attr("y", 6).attr("dy", ".71em").style("text-anchor", "end").text("views");
     return svg.append("path").datum(data).attr("class", "line").attr("d", line);
   }
 });
