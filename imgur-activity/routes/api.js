@@ -60,6 +60,8 @@ router.post('/watches', function(req, res) {
       res.send(JSON.stringify(rootify('watch', doc), null, 2)); 
     }
   }); 
+
+  // create first activity
 });
 
 
@@ -133,6 +135,15 @@ router.delete('/watches/:id', function(req, res) {
       res.set('Access-Control-Allow-Origin', '*');
       res.type('application/json');
       res.send(JSON.stringify(rootify('watch', doc), null, 2)); 
+
+      // delete all related activities
+      models.Activity.remove({watch: doc.id}, function(err, docs) {
+        if(err) {
+          console.log('err removing docs', err);
+        } else {
+          console.log('success removing activities');
+        }
+      });
     }
   });
 });
