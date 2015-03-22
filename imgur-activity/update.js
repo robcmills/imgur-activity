@@ -2,6 +2,7 @@
 var models = require('./models')
 var mongoose = require('mongoose');
 var https = require('https');
+var request = require('request');
 
 mongoose.connect('mongodb://localhost/imgur_activity');
 
@@ -15,24 +16,29 @@ function addActivity (img_id, doc_id) {
     res.on('data', function(data) {
       data = JSON.parse(data.toString()).data;
 
-      console.log('doc_id', doc_id);
-      var newActivity = new models.Activity({ 
-        comments: data.comment_count,
-        datetime: data.datetime * 1000, 
-        downs: data.downs,
-        score: data.score,
-        ups: data.ups,
-        views: data.views,
-        watch_id: doc_id,
-      });
-
-      newActivity.save(function (err, doc) {
-        if(err){
-          console.log('err saving', err, doc);
-        } else {
-          console.log('saved', doc);
+      var postData = {
+        activity: {
+          comments: data.comment_count,
+          datetime: new Date(),
+          downs: data.downs,
+          score: data.score,
+          ups: data.ups,
+          views: data.views,
+          watch: doc_id,
         }
-      }); 
+      };
+      request.post({
+        json: true,
+        url: 'http://localhost:3000/api/activities',
+        body: postData,
+      }, function (error, response, body) {
+        if (error) {
+          return console.error('upload failed:', error);
+          process.exit(1);
+        }
+        console.log('Upload successful!');
+        process.exit();
+      });
 
     });
   }).on('error', function(e) {
@@ -55,6 +61,7 @@ function updateActivity () {
   });
 };
 
+updateActivity();
 setInterval(function() {
   updateActivity();
 }, 60000);

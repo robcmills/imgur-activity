@@ -42,17 +42,10 @@ router.get('/watches', function(req, res, next) {
 router.post('/watches', function(req, res) {
   console.log('req.body', req.body);
   var newWatch = new models.Watch({ 
-    started: req.body.watch.started,
+    activities: [],
     img_id:  req.body.watch.img_id,
+    started: req.body.watch.started,
     uploaded: req.body.watch.uploaded,
-  //   // activity: [{
-  //   //   datetime: req.body.started, 
-  //   //   views: req.body.activity[0].views,
-  //   //   comments: req.body.activity[0].comments,
-  //   //   downs: req.body.activity[0].downs,
-  //   //   ups: req.body.activity[0].ups,
-  //   //   score: req.body.activity[0].score
-  //   // }]
   });
 
   newWatch.save(function (err, doc) {
@@ -172,15 +165,31 @@ router.post('/activities', function(req, res) {
     score: req.body.activity.score,
     ups: req.body.activity.ups,
     views: req.body.activity.views,
-    watch_id: req.body.activity.watch_id,
+    watch: req.body.activity.watch,
   });
 
-  newActivity.save(function (err, doc) {
+  newActivity.save(function (err, newActivity) {
     if(err){
-      console.log('err saving', err, doc);
+      console.log('err saving', err, newActivity);
       res.send(err);
     } else {
-      console.log('saved', doc);
+      console.log('saved activity', newActivity);
+
+      // add activity to parent watch
+      models.Watch.findById(newActivity.watch, function(err, parentWatch) {
+        if(err){
+          console.log('err finding parent watch', err, parentWatch);
+        } else {
+          console.log('found parentWatch', parentWatch);       
+          parentWatch.activities.push(newActivity.id);
+          parentWatch.save(function(err, watch) {
+            if(err) { 
+              console.log('err saving parentWatch!', err, watch);
+            }
+          });
+        }
+      });
+
       doc = doc.toObject();
       res.set('Access-Control-Allow-Origin', '*');
       res.type('application/json');

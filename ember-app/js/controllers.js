@@ -29,22 +29,7 @@ App.WatchesController = Ember.ArrayController.extend({
       started: now,
       uploaded: new Date(imgurObj.datetime * 1000)
     });
-    newWatch.save().then((function(_this) {
-      return function(newWatch) {
-        var newActivity;
-        console.log('newWatch', newWatch, newWatch.constructor);
-        newActivity = _this.store.createRecord('activity', {
-          comments: imgurObj.comment_count,
-          datetime: now,
-          downs: imgurObj.downs,
-          score: imgurObj.score,
-          ups: imgurObj.ups,
-          views: imgurObj.views,
-          watch: newWatch
-        });
-        return newActivity.save();
-      };
-    })(this));
+    newWatch.save();
     return this.reset();
   },
   checkImgur: function(id) {
