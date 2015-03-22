@@ -1,26 +1,64 @@
 
 var models = require('./models')
 var mongoose = require('mongoose');
+var https = require('https');
 
 mongoose.connect('mongodb://localhost/imgur_activity');
 
+function addActivity (img_id, doc_id) {
+  var getOptions = {
+    hostname: 'api.imgur.com',
+    path: '/3/gallery/image/' + img_id,
+    headers: {'Authorization': 'Client-ID b37988f15bb617f'}
+  };
+  https.get(getOptions, function(res) {
+    res.on('data', function(data) {
+      data = JSON.parse(data.toString()).data;
+
+      console.log('doc_id', doc_id);
+      var newActivity = new models.Activity({ 
+        comments: data.comment_count,
+        datetime: data.datetime * 1000, 
+        downs: data.downs,
+        score: data.score,
+        ups: data.ups,
+        views: data.views,
+        watch_id: doc_id,
+      });
+
+      newActivity.save(function (err, doc) {
+        if(err){
+          console.log('err saving', err, doc);
+        } else {
+          console.log('saved', doc);
+        }
+      }); 
+
+    });
+  }).on('error', function(e) {
+    console.log("Got error: " + e.message);
+  });
+};
+
 function updateActivity () {
-  // iterate through existing watches and add activities 
-  console.log('update');
+  // iterate through existing watches and add activity 
+  console.log('updateActivity');
   models.Watch.find(function (err, docs) {
     if(err){ 
       console.log('err finding watches', err);
-      return;
+      process.exit(1);
     } 
-    console.log(docs.length);
     for(i=0, l=docs.length; i<l; i++) {
       var doc = docs[i];
-      console.log('doc', doc);
+      addActivity(doc.img_id, doc.id);
     }
   });
 };
 
-updateActivity();
+setInterval(function() {
+  updateActivity();
+}, 60000);
+
 
 
 //         console.log('doc.activity.length', doc.activity.length);
