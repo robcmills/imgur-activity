@@ -36,8 +36,8 @@ function addActivity (img_id, doc_id) {
           return console.error('upload failed:', error);
           process.exit(1);
         }
-        console.log('Upload successful!');
-        process.exit();
+        console.log('post complete');
+        // process.exit();
       });
 
     });
@@ -62,7 +62,7 @@ function updateActivity () {
 };
 
 updateActivity();
-// setInterval(function() {
-//   updateActivity();
-// }, 60000);
+setInterval(function() {
+  updateActivity();
+}, 60000);
 

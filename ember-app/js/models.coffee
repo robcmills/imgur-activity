@@ -1,6 +1,6 @@
 
 App.Watch = DS.Model.extend
-  activities: DS.hasMany 'activity'
+  activities: DS.hasMany 'activity', async: true
   imgId: DS.attr 'string'  
   started: DS.attr 'date'
   uploaded: DS.attr 'date'
