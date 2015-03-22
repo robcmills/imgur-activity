@@ -174,6 +174,10 @@ router.post('/activities', function(req, res) {
       res.send(err);
     } else {
       console.log('saved activity', newActivity);
+      newActivity = newActivity.toObject();
+      res.set('Access-Control-Allow-Origin', '*');
+      res.type('application/json');
+      res.send(JSON.stringify(rootify('activity', newActivity), null, 2)); 
 
       // add activity to parent watch
       models.Watch.findById(newActivity.watch, function(err, parentWatch) {
@@ -185,15 +189,13 @@ router.post('/activities', function(req, res) {
           parentWatch.save(function(err, watch) {
             if(err) { 
               console.log('err saving parentWatch!', err, watch);
+              // todo: throw err
+            } else {
+              console.log('added new activity to watch', watch);
             }
           });
         }
       });
-
-      doc = doc.toObject();
-      res.set('Access-Control-Allow-Origin', '*');
-      res.type('application/json');
-      res.send(JSON.stringify(rootify('activity', doc), null, 2)); 
     }
   }); 
 
