@@ -9,3 +9,14 @@
 .watches .delete-watch:hover {
   color: #f00;
 }
+.activity .axis path,
+.activity .axis line {
+  fill: none;
+  stroke: #000;
+  shape-rendering: crispEdges;
+}
+.activity .line {
+  fill: none;
+  stroke: #4682b4;
+  stroke-width: 1.5px;
+}

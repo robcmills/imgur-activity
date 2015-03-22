@@ -88,43 +88,21 @@ App.WatchesController = Ember.ArrayController.extend({
 
 App.ActivityView = Ember.View.extend({
   didInsertElement: function() {
-    var chart, ctx, options;
-    ctx = $("#activity-chart").get(0).getContext("2d");
-    options = {};
-    chart = new Chart(ctx).Line(this.get('controller.data', options));
-    return this.set('controller.chart', chart);
+    return console.log('activityView didInsertElement');
   }
 });
 
 App.ActivityController = Ember.Controller.extend({
-  needs: ['activities'],
-  data: Ember.computed.oneWay('controllers.activities.data')
+  needs: ['activities']
 });
 
 App.ActivitiesController = Ember.ArrayController.extend({
   needs: ['activity'],
   model: Ember.computed.oneWay('controllers.activity.model.activities'),
   labels: (function() {
-    return this.get('views').slice(0, 3);
-  }).property('views'),
+    return ['labels'];
+  }).property(),
   views: (function() {
     return this.mapBy('views');
-  }).property('@each.views'),
-  data: (function() {
-    return {
-      labels: this.get('labels'),
-      datasets: [
-        {
-          label: "views",
-          fillColor: "rgba(220,220,220,0.2)",
-          strokeColor: "rgba(220,220,220,1)",
-          pointColor: "rgba(220,220,220,1)",
-          pointStrokeColor: "#fff",
-          pointHighlightFill: "#fff",
-          pointHighlightStroke: "rgba(220,220,220,1)",
-          data: this.get('views').slice(0, 3)
-        }
-      ]
-    };
-  }).property('labels', 'views')
+  }).property('@each.views')
 });

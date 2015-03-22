@@ -76,17 +76,28 @@ router.options('/watches/:id', function(req, res) {
 
 router.get('/watches/:id', function(req, res) {
   console.log('get watches/:id req.params', req.params);
-  models.Watch.findById(req.params.id, function (err, doc) {
+  models.Watch.findById(req.params.id, function (err, watch) {
     if(err) {
       res.send(err);
-    } else if(!doc) {
+    } else if(!watch) {
       res.status(404).send('Not found');
     } else {
-      doc = doc.toObject();
-      console.log('found doc', doc);
-      res.set('Access-Control-Allow-Origin', '*');
-      res.type('application/json');
-      res.send(JSON.stringify(rootify('watch', doc), null, 2)); 
+      watch = watch.toObject();
+      var root = rootify('watch', watch);
+      // sideload activities
+      models.Activity.find({watch: watch.id}, function(err, activities) {
+        if(err) {
+          res.send(err);
+        } else {
+          activities.map(function(activity, i, activities) {
+            activities[i] = activity.toObject();
+          });
+          root['activities'] = activities;
+          res.set('Access-Control-Allow-Origin', '*');
+          res.type('application/json');
+          res.send(JSON.stringify(root, null, 2)); 
+        }
+      });
     }
   });
 });

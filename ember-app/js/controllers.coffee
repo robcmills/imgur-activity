@@ -67,16 +67,11 @@ App.WatchesController = Ember.ArrayController.extend
 
 App.ActivityView = Ember.View.extend
   didInsertElement: () ->
-    ctx = $("#activity-chart").get(0).getContext("2d")
-    options = {}
-    chart = new Chart(ctx).Line(this.get 'controller.data', options)
-    this.set 'controller.chart', chart
+    console.log('activityView didInsertElement');
+
 
 App.ActivityController = Ember.Controller.extend
   needs: ['activities']
-
-  data: Ember.computed.oneWay 'controllers.activities.data'
-  # labels: Ember.computed.oneWay 'controllers.activities.labels'
 
 
 App.ActivitiesController = Ember.ArrayController.extend
@@ -84,26 +79,11 @@ App.ActivitiesController = Ember.ArrayController.extend
   model: Ember.computed.oneWay 'controllers.activity.model.activities'
 
   labels: ( ->
-    this.get('views').slice(0,3)
-    # this.get('views').map (view) -> '' + view
-    # [123456,234567,345678]
-  ).property('views')
+    ['labels']
+  ).property()
 
   views: ( ->
     this.mapBy('views')
   ).property('@each.views')
 
-  data: ( ->
-    labels: this.get 'labels'
-    datasets: [{
-      label: "views"
-      fillColor: "rgba(220,220,220,0.2)"
-      strokeColor: "rgba(220,220,220,1)"
-      pointColor: "rgba(220,220,220,1)"
-      pointStrokeColor: "#fff"
-      pointHighlightFill: "#fff"
-      pointHighlightStroke: "rgba(220,220,220,1)"
-      # data: [123456,234567,345678]
-      data: this.get('views').slice(0,3)
-    }]
-  ).property('labels', 'views')
+
