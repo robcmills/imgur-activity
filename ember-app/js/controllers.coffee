@@ -77,11 +77,15 @@ App.ActivitiesView = Ember.View.extend
   classNames: ['activities-view']
 
   didInsertElement: () ->
+    # this.initD3()
+
+  initD3: () ->
     margin = top: 20, right: 20, bottom: 30, left: 50
     width = 960 - margin.left - margin.right
     height = 300 - margin.top - margin.bottom
 
     parseDate = d3.time.format("%d-%b-%y").parse;
+    # parseDatetime = d3.time.format('%Y-%m-%dT%H:%M:%S.%LZ').parse;
     x = d3.time.scale().range([0, width])
     y = d3.scale.linear().range([height, 0])
 
@@ -89,8 +93,8 @@ App.ActivitiesView = Ember.View.extend
     yAxis = d3.svg.axis().scale(y).orient("left")
 
     line = d3.svg.line()
-      .x (d) -> x(d.date)
-      .y (d) -> y(d.close)
+      .x (d) -> x(d.datetime)
+      .y (d) -> y(d.views)
 
     svg = d3.select(".activities-view")
       .append("svg")
@@ -108,6 +112,7 @@ App.ActivitiesView = Ember.View.extend
       25-Apr-12,610.00
       24-Apr-12,560.28
     """
+    # dataStr = this.get 'controller.viewsDataStr'
 
     data = d3.csv.parse dataStr, (d) -> 
       date: parseDate d.date
@@ -144,5 +149,14 @@ App.ActivitiesController = Ember.ArrayController.extend
   views: ( ->
     this.mapBy('views')
   ).property('@each.views')
+
+  viewsDataStr: ( ->
+    dataStr = 'datetime,views\n'
+    this.forEach (item) ->
+      dataStr += (item.get 'datetime').toISOString() + ',' + 
+        (item.get 'views') + '\n'
+      null
+    dataStr
+  ).property('@each')
 
 

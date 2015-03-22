@@ -92,7 +92,8 @@ App.ActivityController = Ember.Controller.extend({
 
 App.ActivitiesView = Ember.View.extend({
   classNames: ['activities-view'],
-  didInsertElement: function() {
+  didInsertElement: function() {},
+  initD3: function() {
     var data, dataStr, height, line, margin, parseDate, svg, width, x, xAxis, y, yAxis;
     margin = {
       top: 20,
@@ -108,9 +109,9 @@ App.ActivitiesView = Ember.View.extend({
     xAxis = d3.svg.axis().scale(x).orient("bottom");
     yAxis = d3.svg.axis().scale(y).orient("left");
     line = d3.svg.line().x(function(d) {
-      return x(d.date);
+      return x(d.datetime);
     }).y(function(d) {
-      return y(d.close);
+      return y(d.views);
     });
     svg = d3.select(".activities-view").append("svg").attr("width", width + margin.left + margin.right).attr("height", height + margin.top + margin.bottom).append("g").attr("transform", "translate(" + margin.left + "," + margin.top + ")");
     dataStr = "date,close\n1-May-12,582.13\n30-Apr-12,583.98\n27-Apr-12,603.00\n26-Apr-12,607.70\n25-Apr-12,610.00\n24-Apr-12,560.28";
@@ -137,5 +138,14 @@ App.ActivitiesController = Ember.ArrayController.extend({
   model: Ember.computed.oneWay('controllers.activity.model.activities'),
   views: (function() {
     return this.mapBy('views');
-  }).property('@each.views')
+  }).property('@each.views'),
+  viewsDataStr: (function() {
+    var dataStr;
+    dataStr = 'datetime,views\n';
+    this.forEach(function(item) {
+      dataStr += (item.get('datetime')).toISOString() + ',' + (item.get('views')) + '\n';
+      return null;
+    });
+    return dataStr;
+  }).property('@each')
 });
