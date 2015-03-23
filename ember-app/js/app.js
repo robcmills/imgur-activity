@@ -10,7 +10,7 @@ App.Router.map(function() {
     path: '/'
   }, function() {
     this.resource('activity', {
-      path: '/activity/:watch_id'
+      path: '/activity/:imgur_id'
     });
     this.resource('watches', {
       path: '/watches'
@@ -21,7 +21,29 @@ App.Router.map(function() {
   });
 });
 
-App.ActivityRoute = Ember.Route.extend({});
+App.ActivityRoute = Ember.Route.extend({
+  model: function(params) {
+    var promises;
+    promises = [];
+    promises.push(this.store.find('watch', {
+      imgur_id: params.imgur_id
+    }));
+    promises.push(this.store.find('activity', {
+      imgur_id: params.imgur_id
+    }));
+    return Ember.RSVP.all(promises);
+  },
+  serialize: function(model) {
+    return {
+      imgur_id: model.get('imgurId')
+    };
+  },
+  setupController: function(controller, model) {
+    this._super(controller, model);
+    this.controller.set('model', model.get('firstObject'));
+    return this.controllerFor('activities').set('model', model.get('lastObject'));
+  }
+});
 
 App.WatchesRoute = Ember.Route.extend({
   model: function() {

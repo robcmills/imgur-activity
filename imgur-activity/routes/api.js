@@ -42,8 +42,7 @@ router.get('/watches', function(req, res, next) {
 router.post('/watches', function(req, res) {
   console.log('req.body', req.body);
   var newWatch = new models.Watch({ 
-    activities: [],
-    img_id:  req.body.watch.img_id,
+    imgur_id:  req.body.watch.imgur_id,
     started: req.body.watch.started,
     uploaded: req.body.watch.uploaded,
   });
@@ -60,8 +59,6 @@ router.post('/watches', function(req, res) {
       res.send(JSON.stringify(rootify('watch', doc), null, 2)); 
     }
   }); 
-
-  // create first activity
 });
 
 
@@ -86,42 +83,48 @@ router.get('/watches/:id', function(req, res) {
     } else {
       watch = watch.toObject();
       var root = rootify('watch', watch);
+      res.set('Access-Control-Allow-Origin', '*');
+      res.type('application/json');
+      res.send(JSON.stringify(root, null, 2)); 
+
       // sideload activities
-      models.Activity.find({watch: watch.id}, function(err, activities) {
-        if(err) {
-          res.send(err);
-        } else {
-          activities.map(function(activity, i, activities) {
-            activities[i] = activity.toObject();
-          });
-          root['activities'] = activities;
-          res.set('Access-Control-Allow-Origin', '*');
-          res.type('application/json');
-          res.send(JSON.stringify(root, null, 2)); 
-        }
-      });
+      // models.Activity.find({imgur_id: watch.imgur_id}, 
+      //     function(err, activities) {
+      //   if(err) {
+      //     res.send(err);
+      //   } else {
+      //     activities.map(function(activity, i, activities) {
+      //       activities[i] = activity.toObject();
+      //     });
+      //     root['activities'] = activities;
+      //     res.set('Access-Control-Allow-Origin', '*');
+      //     res.type('application/json');
+      //     res.send(JSON.stringify(root, null, 2)); 
+      //   }
+      // });
+
     }
   });
 });
 
-router.put('/watches/:id', function(req, res) {
-  console.log('put watches/:id req.body', req.body);
-  models.Watch.findByIdAndUpdate(req.params.id, req.body.watch,
-      function (err, doc) {
-      console.log('err', err, 'doc', doc);
-    if(err) {
-      res.send(err);
-    } else if(!doc) {
-      res.status(404).send('Not found');
-    } else {
-      doc = doc.toObject();
-      console.log('updated doc', doc);
-      res.set('Access-Control-Allow-Origin', '*');
-      res.type('application/json');
-      res.send(JSON.stringify(rootify('watch', doc), null, 2)); 
-    }
-  });
-});
+// router.put('/watches/:id', function(req, res) {
+//   console.log('put watches/:id req.body', req.body);
+//   models.Watch.findByIdAndUpdate(req.params.id, req.body.watch,
+//       function (err, doc) {
+//       console.log('err', err, 'doc', doc);
+//     if(err) {
+//       res.send(err);
+//     } else if(!doc) {
+//       res.status(404).send('Not found');
+//     } else {
+//       doc = doc.toObject();
+//       console.log('updated doc', doc);
+//       res.set('Access-Control-Allow-Origin', '*');
+//       res.type('application/json');
+//       res.send(JSON.stringify(rootify('watch', doc), null, 2)); 
+//     }
+//   });
+// });
 
 router.delete('/watches/:id', function(req, res) {
   console.log('req.params', req.params);
@@ -137,7 +140,7 @@ router.delete('/watches/:id', function(req, res) {
       res.send(JSON.stringify(rootify('watch', doc), null, 2)); 
 
       // delete all related activities
-      models.Activity.remove({watch: doc.id}, function(err, docs) {
+      models.Activity.remove({imgur_id: doc.imgur_id}, function(err, docs) {
         if(err) {
           console.log('err removing docs', err);
         } else {
@@ -201,10 +204,10 @@ router.post('/activities', function(req, res) {
     comments: req.body.activity.comments,
     datetime: req.body.activity.datetime, 
     downs: req.body.activity.downs,
+    imgur_id: req.body.activity.imgur_id,
     score: req.body.activity.score,
     ups: req.body.activity.ups,
     views: req.body.activity.views,
-    watch: req.body.activity.watch,
   });
 
   newActivity.save(function (err, newActivity) {
@@ -217,24 +220,6 @@ router.post('/activities', function(req, res) {
       res.set('Access-Control-Allow-Origin', '*');
       res.type('application/json');
       res.send(JSON.stringify(rootify('activity', newActivity), null, 2)); 
-
-      // add activity to parent watch
-      models.Watch.findById(newActivity.watch, function(err, parentWatch) {
-        if(err){
-          console.log('err finding parent watch', err, parentWatch);
-        } else {
-          console.log('found parentWatch', parentWatch);       
-          parentWatch.activities.push(newActivity.id);
-          parentWatch.save(function(err, watch) {
-            if(err) { 
-              console.log('err saving parentWatch!', err, watch);
-              // todo: throw err
-            } else {
-              console.log('added new activity to watch', watch);
-            }
-          });
-        }
-      });
     }
   }); 
 

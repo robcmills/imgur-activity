@@ -21,15 +21,36 @@ App.WatchesController = Ember.ArrayController.extend({
     });
   },
   _add: function(imgurObj) {
-    var newWatch, now;
+    var firstActivity, newWatch, now, nowActivity, uploaded;
     console.log('_add', imgurObj);
     now = new Date();
+    uploaded = new Date(imgurObj.datetime * 1000);
     newWatch = this.store.createRecord('watch', {
-      imgId: imgurObj.id,
+      imgurId: imgurObj.id,
       started: now,
-      uploaded: new Date(imgurObj.datetime * 1000)
+      uploaded: uploaded
     });
     newWatch.save();
+    firstActivity = this.store.createRecord('activity', {
+      comments: 0,
+      datetime: uploaded,
+      downs: 0,
+      imgur_id: imgurObj.id,
+      score: 0,
+      ups: 0,
+      views: 0
+    });
+    firstActivity.save();
+    nowActivity = this.store.createRecord('activity', {
+      comments: imgurObj.comment_count,
+      datetime: now,
+      downs: imgurObj.downs,
+      imgur_id: imgurObj.id,
+      score: imgurObj.score,
+      ups: imgurObj.ups,
+      views: imgurObj.views
+    });
+    nowActivity.save();
     return this.reset();
   },
   checkImgur: function(id) {
@@ -75,7 +96,7 @@ App.WatchesController = Ember.ArrayController.extend({
       return console.log(this.validate());
     },
     showActivity: function(watch) {
-      console.log('showActivity', watch);
+      console.log('showActivity', watch.get('imgurId'));
       return this.transitionToRoute('activity', watch);
     },
     "delete": function(watch) {
@@ -86,18 +107,13 @@ App.WatchesController = Ember.ArrayController.extend({
   }
 });
 
-App.ActivityController = Ember.Controller.extend({
-  needs: ['activities']
-});
-
-App.ActivitiesView = Ember.View.extend({
-  classNames: ['activities-view'],
+App.ActivityView = Ember.View.extend({
   didInsertElement: function() {
-    console.log(this.get('controller.constructor'));
+    console.log('activityView didInsertElement');
     return this.initD3();
   },
   initD3: function() {
-    var data, dataStr, height, line, margin, parseDatetime, svg, width, x, xAxis, y, yAxis;
+    var activities, data, dataStr, height, line, margin, parseDatetime, svg, width, x, xAxis, y, yAxis;
     margin = {
       top: 20,
       right: 20,
@@ -106,18 +122,14 @@ App.ActivitiesView = Ember.View.extend({
     };
     width = 960 - margin.left - margin.right;
     height = 300 - margin.top - margin.bottom;
-    parseDatetime = d3.time.format('%Y-%m-%dT%H:%M:%S.%LZ').parse;
     x = d3.time.scale().range([0, width]);
     y = d3.scale.linear().range([height, 0]);
     xAxis = d3.svg.axis().scale(x).orient("bottom");
     yAxis = d3.svg.axis().scale(y).orient("left");
-    line = d3.svg.line().x(function(d) {
-      return x(d.datetime);
-    }).y(function(d) {
-      return y(d.views);
-    });
-    svg = d3.select(".activities-view").append("svg").attr("width", width + margin.left + margin.right).attr("height", height + margin.top + margin.bottom).append("g").attr("transform", "translate(" + margin.left + "," + margin.top + ")");
-    dataStr = this.get('controller.viewsDataStr');
+    svg = d3.select(".activity .chart").append("svg").attr("width", width + margin.left + margin.right).attr("height", height + margin.top + margin.bottom).append("g").attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+    activities = this.get('controller.activities');
+    dataStr = activities.get('viewsDataStr');
+    parseDatetime = d3.time.format('%Y-%m-%dT%H:%M:%S.%LZ').parse;
     data = d3.csv.parse(dataStr, function(d) {
       return {
         datetime: parseDatetime(d.datetime),
@@ -132,16 +144,21 @@ App.ActivitiesView = Ember.View.extend({
     }));
     svg.append("g").attr("class", "x axis").attr("transform", "translate(0," + height + ")").call(xAxis);
     svg.append("g").attr("class", "y axis").call(yAxis).append("text").attr("transform", "rotate(-90)").attr("y", 6).attr("dy", ".71em").style("text-anchor", "end").text("views");
+    line = d3.svg.line().x(function(d) {
+      return x(d.datetime);
+    }).y(function(d) {
+      return y(d.views);
+    });
     return svg.append("path").datum(data).attr("class", "line").attr("d", line);
   }
 });
 
+App.ActivityController = Ember.Controller.extend({
+  needs: ['activities'],
+  activities: Ember.computed.alias('controllers.activities')
+});
+
 App.ActivitiesController = Ember.ArrayController.extend({
-  needs: ['activity'],
-  model: Ember.computed.oneWay('controllers.activity.model.activities'),
-  views: (function() {
-    return this.mapBy('views');
-  }).property('@each.views'),
   viewsDataStr: (function() {
     var dataStr;
     dataStr = 'datetime,views\n';

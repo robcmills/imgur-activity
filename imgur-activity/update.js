@@ -6,10 +6,10 @@ var request = require('request');
 
 mongoose.connect('mongodb://localhost/imgur_activity');
 
-function addActivity (img_id, doc_id) {
+function addActivity (imgur_id) {
   var getOptions = {
     hostname: 'api.imgur.com',
-    path: '/3/gallery/image/' + img_id,
+    path: '/3/gallery/image/' + imgur_id,
     headers: {'Authorization': 'Client-ID b37988f15bb617f'}
   };
   https.get(getOptions, function(res) {
@@ -21,10 +21,10 @@ function addActivity (img_id, doc_id) {
           comments: data.comment_count,
           datetime: new Date(),
           downs: data.downs,
+          imgur_id: imgur_id,
           score: data.score,
           ups: data.ups,
           views: data.views,
-          watch: doc_id,
         }
       };
       request.post({
@@ -37,7 +37,7 @@ function addActivity (img_id, doc_id) {
           process.exit(1);
         }
         console.log('post complete');
-        process.exit();
+        // process.exit();
       });
 
     });
@@ -56,14 +56,14 @@ function updateActivity () {
     } 
     for(i=0, l=docs.length; i<l; i++) {
       var doc = docs[i];
-      addActivity(doc.img_id, doc.id);
+      addActivity(doc.imgur_id);
     }
   });
 };
 
 updateActivity();
 
-// setInterval(function() {
-//   updateActivity();
-// }, 60000);
+setInterval(function() {
+  updateActivity();
+}, 60000);
 

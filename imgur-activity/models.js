@@ -11,17 +11,18 @@ var activitySchema = new Schema({
   comments: Number,
   downs: Number,
   datetime: Date, 
+  imgur_id: String,
   score: Number,
   ups: Number,
   views: Number,
-  watch: Schema.Types.ObjectId,
+  // watch: Schema.Types.ObjectId,
 });
 activitySchema.set('toObject', {transform: idTransform});
 
 var watchSchema = new Schema({
   // activities: [activitySchema],
-  activities: [Schema.Types.ObjectId],
-  img_id:  String,
+  // activities: [Schema.Types.ObjectId],
+  imgur_id:  String,
   started: Date,
   uploaded: Date,
 });

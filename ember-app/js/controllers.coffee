@@ -17,11 +17,34 @@ App.WatchesController = Ember.ArrayController.extend
   _add: (imgurObj) ->
     console.log '_add', imgurObj
     now = new Date()
+    uploaded = new Date(imgurObj.datetime * 1000)
+
     newWatch = this.store.createRecord 'watch', 
-      imgId: imgurObj.id
+      imgurId: imgurObj.id
       started: now
-      uploaded: new Date(imgurObj.datetime * 1000)
+      uploaded: uploaded
     newWatch.save()
+
+    firstActivity = this.store.createRecord 'activity', 
+      comments: 0
+      datetime: uploaded
+      downs: 0
+      imgur_id: imgurObj.id,
+      score: 0
+      ups: 0
+      views: 0
+    firstActivity.save()
+
+    nowActivity = this.store.createRecord 'activity', 
+      comments: imgurObj.comment_count
+      datetime: now
+      downs: imgurObj.downs
+      imgur_id: imgurObj.id,
+      score: imgurObj.score
+      ups: imgurObj.ups
+      views: imgurObj.views
+    nowActivity.save()
+
     this.reset()
 
   checkImgur: (id) ->
@@ -56,7 +79,7 @@ App.WatchesController = Ember.ArrayController.extend
       console.log this.validate()
 
     showActivity: (watch) ->
-      console.log 'showActivity', watch
+      console.log 'showActivity', watch.get 'imgurId'
       this.transitionToRoute 'activity', watch
 
     delete: (watch) ->
@@ -65,19 +88,9 @@ App.WatchesController = Ember.ArrayController.extend
       watch.save()
 
 
-# App.ActivityView = Ember.View.extend
-#   didInsertElement: () ->
-#     console.log('activityView didInsertElement');
-
-App.ActivityController = Ember.Controller.extend
-  needs: ['activities']
-
-
-App.ActivitiesView = Ember.View.extend
-  classNames: ['activities-view']
-
+App.ActivityView = Ember.View.extend
   didInsertElement: () ->
-    console.log this.get 'controller.constructor'
+    console.log('activityView didInsertElement');
     this.initD3()
 
   initD3: () ->
@@ -85,35 +98,24 @@ App.ActivitiesView = Ember.View.extend
     width = 960 - margin.left - margin.right
     height = 300 - margin.top - margin.bottom
 
-    # parseDate = d3.time.format("%d-%b-%y").parse;
-    parseDatetime = d3.time.format('%Y-%m-%dT%H:%M:%S.%LZ').parse;
     x = d3.time.scale().range([0, width])
     y = d3.scale.linear().range([height, 0])
 
     xAxis = d3.svg.axis().scale(x).orient("bottom")
     yAxis = d3.svg.axis().scale(y).orient("left")
 
-    line = d3.svg.line()
-      .x (d) -> x(d.datetime)
-      .y (d) -> y(d.views)
-
-    svg = d3.select(".activities-view")
+    svg = d3.select(".activity .chart")
       .append("svg")
         .attr("width", width + margin.left + margin.right)
         .attr("height", height + margin.top + margin.bottom)
       .append("g")
         .attr("transform", "translate(" + margin.left + "," + margin.top + ")")
 
-    # dataStr = """
-    #   date,close
-    #   1-May-12,582.13
-    #   30-Apr-12,583.98
-    #   27-Apr-12,603.00
-    #   26-Apr-12,607.70
-    #   25-Apr-12,610.00
-    #   24-Apr-12,560.28
-    # """
-    dataStr = this.get 'controller.viewsDataStr'
+
+    # render views as default
+    activities = this.get 'controller.activities'
+    dataStr = activities.get 'viewsDataStr'
+    parseDatetime = d3.time.format('%Y-%m-%dT%H:%M:%S.%LZ').parse;
 
     data = d3.csv.parse dataStr, (d) -> 
       datetime: parseDatetime d.datetime
@@ -137,19 +139,22 @@ App.ActivitiesView = Ember.View.extend
         .style("text-anchor", "end")
         .text("views")
 
+    line = d3.svg.line()
+      .x (d) -> x(d.datetime)
+      .y (d) -> y(d.views)
+
     svg.append("path")
       .datum(data)
       .attr("class", "line")
       .attr("d", line)
 
 
-App.ActivitiesController = Ember.ArrayController.extend
-  needs: ['activity']
-  model: Ember.computed.oneWay 'controllers.activity.model.activities'
+App.ActivityController = Ember.Controller.extend
+  needs: ['activities']
+  activities: Ember.computed.alias 'controllers.activities'
 
-  views: ( ->
-    this.mapBy('views')
-  ).property '@each.views'
+
+App.ActivitiesController = Ember.ArrayController.extend
 
   viewsDataStr: ( ->
     dataStr = 'datetime,views\n'

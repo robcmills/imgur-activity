@@ -1,7 +1,7 @@
 
 App.Watch = DS.Model.extend
-  activities: DS.hasMany 'activity', async: true
-  imgId: DS.attr 'string'  
+  # activities: DS.hasMany 'activity', async: true
+  imgurId: DS.attr 'string'  
   started: DS.attr 'date'
   uploaded: DS.attr 'date'
 
@@ -9,10 +9,10 @@ App.Activity = DS.Model.extend
   comments: DS.attr 'number'
   datetime: DS.attr 'date'
   downs: DS.attr 'number'
+  imgurId: DS.attr 'string'
   score: DS.attr 'number'
   ups: DS.attr 'number'
   views: DS.attr 'number'
-  watch: DS.belongsTo 'watch'
 
   # deltaViews: DS.attr 'number', default: 0
   # deltaComments: DS.attr 'number', default: 0
