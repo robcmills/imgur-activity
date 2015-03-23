@@ -129,7 +129,7 @@ App.ActivityView = Ember.View.extend({
     svg = d3.select(".activity .chart").append("svg").attr("width", width + margin.left + margin.right).attr("height", height + margin.top + margin.bottom).append("g").attr("transform", "translate(" + margin.left + "," + margin.top + ")");
     activities = this.get('controller.activities');
     dataStr = activities.get('viewsDataStr');
-    parseDatetime = d3.time.format('%Y-%m-%dT%H:%M:%S.%LZ').parse;
+    parseDatetime = d3.time.format('%0m/%0d/%Y %0I:%M:%S %p').parse;
     data = d3.csv.parse(dataStr, function(d) {
       return {
         datetime: parseDatetime(d.datetime),
@@ -163,7 +163,7 @@ App.ActivitiesController = Ember.ArrayController.extend({
     var dataStr;
     dataStr = 'datetime,views\n';
     this.forEach(function(item) {
-      dataStr += (item.get('datetime')).toISOString() + ',' + (item.get('views')) + '\n';
+      dataStr += (item.get('datetime')).toLocaleString().replace(',', '') + ',' + (item.get('views')) + '\n';
       return null;
     });
     return dataStr;

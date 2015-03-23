@@ -115,7 +115,7 @@ App.ActivityView = Ember.View.extend
     # render views as default
     activities = this.get 'controller.activities'
     dataStr = activities.get 'viewsDataStr'
-    parseDatetime = d3.time.format('%Y-%m-%dT%H:%M:%S.%LZ').parse;
+    parseDatetime = d3.time.format('%0m/%0d/%Y %0I:%M:%S %p').parse;
 
     data = d3.csv.parse dataStr, (d) -> 
       datetime: parseDatetime d.datetime
@@ -155,12 +155,14 @@ App.ActivityController = Ember.Controller.extend
 
 
 App.ActivitiesController = Ember.ArrayController.extend
+  # sortProperties: 'datetime'
 
   viewsDataStr: ( ->
     dataStr = 'datetime,views\n'
     this.forEach (item) ->
-      dataStr += (item.get 'datetime').toISOString() + ',' + 
-        (item.get 'views') + '\n'
+      dataStr += (item.get 'datetime')
+        .toLocaleString().replace(',','') + ',' + 
+          (item.get 'views') + '\n'
       null
     dataStr
   ).property '@each'
