@@ -29,7 +29,7 @@ App.WatchesController = Ember.ArrayController.extend
       comments: 0
       datetime: uploaded
       downs: 0
-      imgur_id: imgurObj.id,
+      imgurId: imgurObj.id,
       score: 0
       ups: 0
       views: 0
@@ -39,7 +39,7 @@ App.WatchesController = Ember.ArrayController.extend
       comments: imgurObj.comment_count
       datetime: now
       downs: imgurObj.downs
-      imgur_id: imgurObj.id,
+      imgurId: imgurObj.id,
       score: imgurObj.score
       ups: imgurObj.ups
       views: imgurObj.views
@@ -80,7 +80,7 @@ App.WatchesController = Ember.ArrayController.extend
 
     showActivity: (watch) ->
       console.log 'showActivity', watch.get 'imgurId'
-      this.transitionToRoute 'activity', watch
+      this.transitionToRoute 'activity', [watch]
 
     delete: (watch) ->
       console.log 'delete', watch
@@ -155,11 +155,10 @@ App.ActivityController = Ember.Controller.extend
 
 
 App.ActivitiesController = Ember.ArrayController.extend
-  # sortProperties: 'datetime'
 
   viewsDataStr: ( ->
     dataStr = 'datetime,views\n'
-    this.forEach (item) ->
+    this.sortBy('datetime').forEach (item) ->
       dataStr += (item.get 'datetime')
         .toLocaleString().replace(',','') + ',' + 
           (item.get 'views') + '\n'

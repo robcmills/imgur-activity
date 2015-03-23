@@ -23,15 +23,22 @@ App.Router.map(function() {
 
 App.ActivityRoute = Ember.Route.extend({
   model: function(params) {
-    var promises;
-    promises = [];
-    promises.push(this.store.find('watch', {
+    console.log('model', params);
+    return this.store.find('watch', {
       imgur_id: params.imgur_id
-    }));
-    promises.push(this.store.find('activity', {
-      imgur_id: params.imgur_id
-    }));
-    return Ember.RSVP.all(promises);
+    });
+  },
+  afterModel: function(model, transition) {
+    var imgurId;
+    console.log('afterModel', model.get('firstObject.imgurId'));
+    imgurId = model.get('firstObject.imgurId');
+    return this.store.find('activity', {
+      imgur_id: imgurId
+    }).then((function(_this) {
+      return function(activities) {
+        return _this.controllerFor('activities').set('model', activities);
+      };
+    })(this));
   },
   serialize: function(model) {
     return {
@@ -40,8 +47,7 @@ App.ActivityRoute = Ember.Route.extend({
   },
   setupController: function(controller, model) {
     this._super(controller, model);
-    this.controller.set('model', model.get('firstObject'));
-    return this.controllerFor('activities').set('model', model.get('lastObject'));
+    return this.controller.set('model', model.get('firstObject'));
   }
 });
 
@@ -55,12 +61,7 @@ App.AboutRoute = Ember.Route.extend({});
 
 App.ApplicationAdapter = DS.ActiveModelAdapter.extend({
   host: 'http://localhost:3000',
-  namespace: 'api',
-  ajax: function(url, type, hash) {
-    hash = hash || {};
-    hash.cache = false;
-    return this._super(url, type, hash);
-  }
+  namespace: 'api'
 });
 
 inflector = Ember.Inflector.inflector;

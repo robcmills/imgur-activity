@@ -23,7 +23,7 @@ router.options('/watches', function(req, res) {
 });
 
 router.get('/watches', function(req, res, next) {
-  models.Watch.find(function (err, docs) {
+  models.Watch.find(req.query, function (err, docs) {
     if(err){ 
       res.send(err); 
     } else {
@@ -164,7 +164,8 @@ router.options('/activities', function(req, res) {
 });
 
 router.get('/activities', function(req, res, next) {
-  models.Activity.find(function (err, docs) {
+  console.log('request.query', req.query);
+  models.Activity.find(req.query, function (err, docs) {
     if(err){ 
       res.send(err); 
     } else {

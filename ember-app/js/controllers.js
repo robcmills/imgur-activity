@@ -35,7 +35,7 @@ App.WatchesController = Ember.ArrayController.extend({
       comments: 0,
       datetime: uploaded,
       downs: 0,
-      imgur_id: imgurObj.id,
+      imgurId: imgurObj.id,
       score: 0,
       ups: 0,
       views: 0
@@ -45,7 +45,7 @@ App.WatchesController = Ember.ArrayController.extend({
       comments: imgurObj.comment_count,
       datetime: now,
       downs: imgurObj.downs,
-      imgur_id: imgurObj.id,
+      imgurId: imgurObj.id,
       score: imgurObj.score,
       ups: imgurObj.ups,
       views: imgurObj.views
@@ -97,7 +97,7 @@ App.WatchesController = Ember.ArrayController.extend({
     },
     showActivity: function(watch) {
       console.log('showActivity', watch.get('imgurId'));
-      return this.transitionToRoute('activity', watch);
+      return this.transitionToRoute('activity', [watch]);
     },
     "delete": function(watch) {
       console.log('delete', watch);
@@ -162,7 +162,7 @@ App.ActivitiesController = Ember.ArrayController.extend({
   viewsDataStr: (function() {
     var dataStr;
     dataStr = 'datetime,views\n';
-    this.forEach(function(item) {
+    this.sortBy('datetime').forEach(function(item) {
       dataStr += (item.get('datetime')).toLocaleString().replace(',', '') + ',' + (item.get('views')) + '\n';
       return null;
     });
