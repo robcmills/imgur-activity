@@ -25,15 +25,15 @@ App.WatchesController = Ember.ArrayController.extend
       uploaded: uploaded
     newWatch.save()
 
-    firstActivity = this.store.createRecord 'activity', 
-      comments: 0
-      datetime: uploaded
-      downs: 0
-      imgurId: imgurObj.id,
-      score: 0
-      ups: 0
-      views: 0
-    firstActivity.save()
+    # firstActivity = this.store.createRecord 'activity', 
+    #   comments: 0
+    #   datetime: uploaded
+    #   downs: 0
+    #   imgurId: imgurObj.id,
+    #   score: 0
+    #   ups: 0
+    #   views: 0
+    # firstActivity.save()
 
     nowActivity = this.store.createRecord 'activity', 
       comments: imgurObj.comment_count
@@ -92,6 +92,10 @@ App.ActivityView = Ember.View.extend
   didInsertElement: () ->
     console.log('activityView didInsertElement');
     this.initD3()
+
+  activitiesDidChange: ( ->
+    console.log 'activitiesDidChange'
+  ).observes 'controller.activities.length'
 
   initD3: () ->
     margin = top: 20, right: 20, bottom: 30, left: 100
@@ -152,6 +156,14 @@ App.ActivityView = Ember.View.extend
 App.ActivityController = Ember.Controller.extend
   needs: ['activities']
   activities: Ember.computed.alias 'controllers.activities'
+
+  init: () ->
+    this._super()
+    socket = io.connect('http://localhost:3000')
+    socket.on 'new_activity', (data) => 
+      console.log 'new_activity', typeof data, data
+      this.store.push 'activity', this.store.normalize 'activity', data
+    this.set 'socket', socket
 
 
 App.ActivitiesController = Ember.ArrayController.extend

@@ -21,7 +21,7 @@ App.WatchesController = Ember.ArrayController.extend({
     });
   },
   _add: function(imgurObj) {
-    var firstActivity, newWatch, now, nowActivity, uploaded;
+    var newWatch, now, nowActivity, uploaded;
     console.log('_add', imgurObj);
     now = new Date();
     uploaded = new Date(imgurObj.datetime * 1000);
@@ -31,16 +31,6 @@ App.WatchesController = Ember.ArrayController.extend({
       uploaded: uploaded
     });
     newWatch.save();
-    firstActivity = this.store.createRecord('activity', {
-      comments: 0,
-      datetime: uploaded,
-      downs: 0,
-      imgurId: imgurObj.id,
-      score: 0,
-      ups: 0,
-      views: 0
-    });
-    firstActivity.save();
     nowActivity = this.store.createRecord('activity', {
       comments: imgurObj.comment_count,
       datetime: now,
@@ -112,6 +102,9 @@ App.ActivityView = Ember.View.extend({
     console.log('activityView didInsertElement');
     return this.initD3();
   },
+  activitiesDidChange: (function() {
+    return console.log('activitiesDidChange');
+  }).observes('controller.activities.length'),
   initD3: function() {
     var activities, data, dataStr, height, line, margin, parseDatetime, svg, width, x, xAxis, y, yAxis;
     margin = {
@@ -155,7 +148,19 @@ App.ActivityView = Ember.View.extend({
 
 App.ActivityController = Ember.Controller.extend({
   needs: ['activities'],
-  activities: Ember.computed.alias('controllers.activities')
+  activities: Ember.computed.alias('controllers.activities'),
+  init: function() {
+    var socket;
+    this._super();
+    socket = io.connect('http://localhost:3000');
+    socket.on('new_activity', (function(_this) {
+      return function(data) {
+        console.log('new_activity', typeof data, data);
+        return _this.store.push('activity', _this.store.normalize('activity', data));
+      };
+    })(this));
+    return this.set('socket', socket);
+  }
 });
 
 App.ActivitiesController = Ember.ArrayController.extend({

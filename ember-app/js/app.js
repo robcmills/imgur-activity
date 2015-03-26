@@ -29,20 +29,20 @@ App.ActivityRoute = Ember.Route.extend({
     });
   },
   afterModel: function(model, transition) {
-    var imgurId;
+    var filter, imgurId;
     console.log('afterModel', model.get('firstObject.imgurId'));
     imgurId = model.get('firstObject.imgurId');
-    return this.store.find('activity', {
+    filter = this.store.filter('activity', {
       imgur_id: imgurId
-    }).then((function(_this) {
-      return function(activities) {
-        return _this.controllerFor('activities').set('model', activities);
-      };
-    })(this));
+    }, function(activity) {
+      return activity.get('imgurId') === imgurId;
+    });
+    this.controllerFor('activities').set('model', filter);
+    return filter;
   },
   serialize: function(model) {
     return {
-      imgur_id: model.get('imgurId')
+      imgur_id: model.get('firstObject.imgurId')
     };
   },
   setupController: function(controller, model) {

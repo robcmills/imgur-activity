@@ -17,11 +17,15 @@ App.ActivityRoute = Ember.Route.extend
   afterModel: (model, transition) ->
     console.log 'afterModel', model.get 'firstObject.imgurId'
     imgurId = model.get 'firstObject.imgurId'
-    this.store.find('activity', imgur_id: imgurId).then (activities) =>
-      this.controllerFor('activities').set 'model', activities
+    filter = this.store.filter('activity', imgur_id: imgurId,
+      (activity) -> activity.get('imgurId') == imgurId)
+    this.controllerFor('activities').set 'model', filter
+    filter
+    # this.store.find('activity', imgur_id: imgurId).then (activities) =>
+    #   this.controllerFor('activities').set 'model', activities     
 
   serialize: (model) ->
-    imgur_id: model.get 'imgurId'
+    imgur_id: model.get 'firstObject.imgurId'
 
   setupController: (controller, model) ->
     this._super controller, model

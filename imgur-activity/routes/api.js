@@ -3,6 +3,7 @@ var express = require('express');
 var models = require('../models')
 var router = express.Router();
 var https = require('https');
+var io = require('../io')
 
 function rootify (name, docs) {
   // adhere to RESTful convention
@@ -218,9 +219,12 @@ router.post('/activities', function(req, res) {
     } else {
       console.log('saved activity', newActivity);
       newActivity = newActivity.toObject();
+      var json = JSON.stringify(rootify('activity', newActivity), null, 2);
       res.set('Access-Control-Allow-Origin', '*');
       res.type('application/json');
-      res.send(JSON.stringify(rootify('activity', newActivity), null, 2)); 
+      res.send(json); 
+
+      io.emit('new_activity', newActivity)
     }
   }); 
 

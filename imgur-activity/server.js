@@ -1,33 +1,25 @@
 #!/usr/bin/env node
 
-/**
- * Module dependencies.
- */
-
+/* Module dependencies. */
 var app = require('./app');
+var io = require('./io');
 var debug = require('debug')('imgur-activity:server');
 var http = require('http');
 
-/**
- * Get port from environment and store in Express.
- */
-
+/* Get port from environment and store in Express. */
 var port = normalizePort(process.env.PORT || '3000');
 app.set('port', port);
 
-/**
- * Create HTTP server.
- */
-
+/* Create HTTP server. */
 var server = http.createServer(app);
 
-/**
- * Listen on provided port, on all network interfaces.
- */
-
+/* Listen on provided port, on all network interfaces. */
 server.listen(port);
 server.on('error', onError);
 server.on('listening', onListening);
+
+
+io.attach(server);
 
 /**
  * Normalize a port into a number, string, or false.

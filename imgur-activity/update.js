@@ -37,7 +37,7 @@ function addActivity (imgur_id) {
           process.exit(1);
         }
         console.log('post complete');
-        // process.exit();
+        process.exit();
       });
 
     });
@@ -63,7 +63,7 @@ function updateActivity () {
 
 updateActivity();
 
-setInterval(function() {
-  updateActivity();
-}, 60000);
+// setInterval(function() {
+//   updateActivity();
+// }, 60000);
 
