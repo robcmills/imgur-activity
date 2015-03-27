@@ -47,7 +47,8 @@ App.ActivityRoute = Ember.Route.extend({
   },
   setupController: function(controller, model) {
     this._super(controller, model);
-    return this.controller.set('model', model.get('firstObject'));
+    this.controller.set('model', model.get('firstObject'));
+    return this.generateController('socket');
   }
 });
 

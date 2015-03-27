@@ -148,19 +148,7 @@ App.ActivityView = Ember.View.extend({
 
 App.ActivityController = Ember.Controller.extend({
   needs: ['activities'],
-  activities: Ember.computed.alias('controllers.activities'),
-  init: function() {
-    var socket;
-    this._super();
-    socket = io.connect('http://localhost:3000');
-    socket.on('new_activity', (function(_this) {
-      return function(data) {
-        console.log('new_activity', typeof data, data);
-        return _this.store.push('activity', _this.store.normalize('activity', data));
-      };
-    })(this));
-    return this.set('socket', socket);
-  }
+  activities: Ember.computed.alias('controllers.activities')
 });
 
 App.ActivitiesController = Ember.ArrayController.extend({
@@ -173,4 +161,20 @@ App.ActivitiesController = Ember.ArrayController.extend({
     });
     return dataStr;
   }).property('@each')
+});
+
+App.SocketController = Ember.Controller.extend({
+  init: function() {
+    var socket;
+    console.log('SocketController init');
+    this._super();
+    socket = io.connect('http://localhost:3000');
+    socket.on('new_activity', (function(_this) {
+      return function(data) {
+        console.log('new_activity', typeof data, data);
+        return _this.store.push('activity', _this.store.normalize('activity', data));
+      };
+    })(this));
+    return this.set('socket', socket);
+  }
 });

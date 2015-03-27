@@ -157,14 +157,6 @@ App.ActivityController = Ember.Controller.extend
   needs: ['activities']
   activities: Ember.computed.alias 'controllers.activities'
 
-  init: () ->
-    this._super()
-    socket = io.connect('http://localhost:3000')
-    socket.on 'new_activity', (data) => 
-      console.log 'new_activity', typeof data, data
-      this.store.push 'activity', this.store.normalize 'activity', data
-    this.set 'socket', socket
-
 
 App.ActivitiesController = Ember.ArrayController.extend
 
@@ -178,4 +170,14 @@ App.ActivitiesController = Ember.ArrayController.extend
     dataStr
   ).property '@each'
 
+
+App.SocketController = Ember.Controller.extend
+  init: () ->
+    console.log 'SocketController init'
+    this._super()
+    socket = io.connect('http://localhost:3000')
+    socket.on 'new_activity', (data) => 
+      console.log 'new_activity', typeof data, data
+      this.store.push 'activity', this.store.normalize 'activity', data
+    this.set 'socket', socket
 

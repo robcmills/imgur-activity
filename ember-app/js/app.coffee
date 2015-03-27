@@ -21,8 +21,6 @@ App.ActivityRoute = Ember.Route.extend
       (activity) -> activity.get('imgurId') == imgurId)
     this.controllerFor('activities').set 'model', filter
     filter
-    # this.store.find('activity', imgur_id: imgurId).then (activities) =>
-    #   this.controllerFor('activities').set 'model', activities     
 
   serialize: (model) ->
     imgur_id: model.get 'firstObject.imgurId'
@@ -30,6 +28,7 @@ App.ActivityRoute = Ember.Route.extend
   setupController: (controller, model) ->
     this._super controller, model
     this.controller.set 'model', model.get 'firstObject'
+    this.generateController 'socket'
 
 
 App.WatchesRoute = Ember.Route.extend
