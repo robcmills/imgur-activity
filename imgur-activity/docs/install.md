@@ -7,7 +7,7 @@ from scratch
     // generate package.json
     node init
     // install nodemon
-    npm install -g nodemon
+    npm install nodemon
 
 ## express 
 
@@ -18,7 +18,7 @@ from scratch
     npm install
 
     // run local
-    nodemon server.js
+    node_modules/nodemon/bin/nodemon.js server.js
     visit localhost:3000
 
 ## mongo

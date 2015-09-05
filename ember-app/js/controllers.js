@@ -166,7 +166,6 @@ App.ActivitiesController = Ember.ArrayController.extend({
 App.SocketController = Ember.Controller.extend({
   init: function() {
     var socket;
-    console.log('SocketController init');
     this._super();
     socket = io.connect('http://localhost:3000');
     socket.on('new_activity', (function(_this) {

@@ -1,6 +1,5 @@
 
 App.Watch = DS.Model.extend
-  # activities: DS.hasMany 'activity', async: true
   imgurId: DS.attr 'string'  
   started: DS.attr 'date'
   uploaded: DS.attr 'date'
