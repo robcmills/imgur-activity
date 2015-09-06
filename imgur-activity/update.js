@@ -13,8 +13,14 @@ function addActivity (imgur_id) {
     headers: {'Authorization': 'Client-ID b37988f15bb617f'}
   };
   https.get(getOptions, function(res) {
-    res.on('data', function(data) {
-      data = JSON.parse(data.toString()).data;
+
+    var data = '';
+    res.on('data', function(chunk){
+      data += chunk.toString();
+    });
+
+    res.on('end', function() {
+      data = JSON.parse(data).data;
 
       var postData = {
         activity: {
@@ -37,7 +43,7 @@ function addActivity (imgur_id) {
           process.exit(1);
         }
         console.log('post complete');
-        process.exit();
+        // process.exit();
       });
 
     });
@@ -63,7 +69,7 @@ function updateActivity () {
 
 updateActivity();
 
-// setInterval(function() {
-//   updateActivity();
-// }, 60000);
+setInterval(function() {
+  updateActivity();
+}, 60000);
 
